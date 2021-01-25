@@ -1,12 +1,12 @@
 <?php
 
+/** @noinspection PhpMissingFieldTypeInspection */
+
 namespace Devbox\Command;
 
-use Devbox\AbstractRecipe;
-use Devbox\Recipe\Mage241;
+use Devbox\RecipeInterface;
 use Devbox\Service\Config;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +24,7 @@ class Status extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -38,7 +38,7 @@ class Status extends Command
 
         $recipes = Config::getRecipes();
         foreach ($recipes as $version => $className) {
-            /** @var AbstractRecipe $instance */
+            /** @var RecipeInterface $instance */
             $instance = new $className($io);
 
             $tableRows[] = [

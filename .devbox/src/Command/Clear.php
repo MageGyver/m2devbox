@@ -1,18 +1,19 @@
 <?php
 
+/** @noinspection PhpMissingFieldTypeInspection */
+
 namespace Devbox\Command;
 
-use Devbox\Recipe\Mage241;
-use Devbox\Service\Config;
 use Devbox\Service\RecipeLoader;
+use Exception;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Clear extends Command
 {
+    /** @var string */
     protected static $defaultName = 'clear';
 
     protected function configure()
@@ -23,7 +24,7 @@ class Clear extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -46,7 +47,7 @@ class Clear extends Command
             }
 
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $io->error($e->getMessage());
             return Command::FAILURE;
         }

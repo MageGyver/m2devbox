@@ -1,10 +1,11 @@
 <?php
 
+/** @noinspection PhpMissingFieldTypeInspection */
+
 namespace Devbox\Command;
 
-use Devbox\Recipe\Mage241;
-use Devbox\Service\Config;
 use Devbox\Service\RecipeLoader;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +29,7 @@ class Compose extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -39,7 +40,7 @@ class Compose extends Command
             echo $commandOutput;
 
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $io->error($e->getMessage());
             return Command::FAILURE;
         }

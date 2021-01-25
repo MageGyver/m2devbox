@@ -1,5 +1,6 @@
 <?php
 
+use Devbox\Devbox;
 use PHPUnit\Framework\TestCase;
 
 class DevboxTest extends TestCase
@@ -18,7 +19,7 @@ class DevboxTest extends TestCase
 
         self::assertEquals(
             $expected,
-            \Devbox\Devbox::extrapolateEnv($input)
+            Devbox::extrapolateEnv($input)
         );
     }
 }

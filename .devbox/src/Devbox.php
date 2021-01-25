@@ -23,7 +23,8 @@ class Devbox extends Application
      *
      * @return string A help message
      */
-    public function getHelp() {
+    public function getHelp(): string
+    {
 
         return '<options=bold;fg=#f46f25>
                                           .d8888b.       888

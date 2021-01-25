@@ -2,7 +2,6 @@
 
 namespace Devbox\Service;
 
-use Devbox\AbstractRecipe;
 use Devbox\RecipeInterface;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;

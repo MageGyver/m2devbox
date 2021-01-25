@@ -199,7 +199,7 @@ abstract class AbstractRecipe implements RecipeInterface
                 $io->writeln("<info>\t" . strtoupper($type) . '</info> > ' . $buffer);
             } else if ($spinner !== null && $showOutputInSpinner) {
                 $spinner->setMessage($buffer);
-            };
+            }
         };
 
         $p = new Process($commandLine);

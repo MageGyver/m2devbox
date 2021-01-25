@@ -23,14 +23,13 @@ class Config
      *
      * @param string $key   Config key
      * @return mixed        Config value
-     * @throws \Exception
      */
     public static function get(string $key)
     {
         self::load();
 
         if (!array_key_exists($key, self::$config)) {
-            throw new \Exception('Config key does not exist');
+            return null;
         }
 
         return self::$config[$key];
