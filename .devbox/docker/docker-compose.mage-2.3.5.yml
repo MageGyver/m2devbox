@@ -1,0 +1,16 @@
+services:
+  db:
+    environment:
+      MYSQL_DATABASE: "magento2_235"
+    container_name: "mage2devbox-235-db"
+    image: mariadb:10.4
+
+  web:
+    container_name: "mage2devbox-235-web"
+    depends_on:
+      - db
+    build:
+      context: ./php/7.3
+    volumes:
+      - ../../mage_src/2.3.5/:/var/www/html:cached
+      - ../../app_code/:/var/www/html/app/code:cached

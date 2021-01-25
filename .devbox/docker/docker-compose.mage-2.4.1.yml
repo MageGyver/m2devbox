@@ -1,0 +1,51 @@
+services:
+  db:
+    environment:
+      MYSQL_DATABASE: "magento2_241"
+    container_name: "mage2devbox-241-db"
+    image: mariadb:10.4
+    networks:
+      - elastic
+
+  web:
+    container_name: "mage2devbox-241-web"
+    build:
+      context: ./php/7.3
+    depends_on:
+      - elastic
+      - db
+    volumes:
+      - ../../mage_src/2.4.1/:/var/www/html:cached
+      - ../../app_code/:/var/www/html/app/code:cached
+    networks:
+      - elastic
+
+  elastic:
+    container_name: "mage2devbox-241-elastic"
+    build:
+      context: ./elastic
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data-elastic:/usr/share/elasticsearch/data
+    expose:
+      - 9200
+    ports:
+      - "${DOCKER_ES_PORT}:9200"
+      - "${DOCKER_ES_CONTROL_PORT}:9300"
+    networks:
+      - elastic
+
+volumes:
+  data-elastic:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge

@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Mage2 Devbox
+ */
+
+use Devbox\Devbox;
+
+require __DIR__.'/vendor/autoload.php';
+
+define('DB_ROOT', dirname(__DIR__));
+define('DB_SRC', __DIR__.'/src');
+define('DB_VERSION', '0.1');
+define('DOCKER_CONFIGS', __DIR__.'/docker');
+
+// load .env variables into $_ENV
+$dotenv = Dotenv\Dotenv::createImmutable(DB_ROOT);
+$dotenv->load();
+
+// init and run application
+$devbox = new Devbox('Mage2 Devbox', DB_VERSION);
+
+/** @noinspection PhpUnhandledExceptionInspection */
+$devbox->run();

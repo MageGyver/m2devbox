@@ -1,0 +1,7 @@
+.idea/
+/.env
+.devbox/vendor/
+mage_src/*
+!mage_src/README.md
+app_code/*
+!app_code/README.md

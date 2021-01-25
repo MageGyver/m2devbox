@@ -1,0 +1,33 @@
+{
+    "name": "aeno/mage2-devbox",
+    "description": "Manage multiple Magento 2 instances via Docker",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "symfony/console": "^5.2",
+        "ext-json": "*",
+        "vlucas/phpdotenv": "^5.2",
+        "symfony/process": "^5.2",
+        "alecrabbit/php-cli-snake": "^0.6",
+        "symfony/filesystem": "^5.2",
+        "ext-posix": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    },
+    "autoload": {
+        "psr-4": {"Devbox\\": "src/"}
+    },
+    "repositories": {
+        "alecrabbit/php-cli-snake": {
+            "type": "vcs",
+            "url": "https://github.com/aeno/php-cli-snake"
+        }
+    },
+    "authors": [
+        {
+            "name": "Steffen Rieke",
+            "email": "devbox@aenogym.de"
+        }
+    ]
+}
