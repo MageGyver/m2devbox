@@ -49,6 +49,7 @@ class Devbox extends Application
     {
         $commands = [];
 
+        /** @psalm-suppress UndefinedConstant */
         $files = array_diff(scandir(DB_SRC.'/Command'), ['.', '..']);
         foreach ($files as $file) {
             $pi = pathinfo($file);

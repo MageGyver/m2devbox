@@ -8,6 +8,7 @@ class State
 
     protected static function getStateFileName(): string
     {
+        /** @psalm-suppress UndefinedConstant */
         return DB_ROOT.'/state.json';
     }
 
