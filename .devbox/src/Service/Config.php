@@ -10,11 +10,31 @@ class Config
 
     /**
      *  Load the config file.
+     *
+     * @param string|null $file
      */
-    protected static function load()
+    public static function load(?string $file = null)
     {
         if (self::$config === null) {
-            self::$config = include DB_SRC.'/etc/config.php';
+            if ($file === null) {
+                /** @psalm-suppress UndefinedConstant */
+                $file = DB_SRC.'/etc/config.php';
+            }
+
+            /** @noinspection PhpIncludeInspection */
+            self::$config = include $file;
+        }
+    }
+
+    /**
+     *  Load the config from an array.
+     *
+     * @param array $config
+     */
+    public static function loadFromArray(array $config)
+    {
+        if (self::$config === null) {
+            self::$config = $config;
         }
     }
 
@@ -35,17 +55,20 @@ class Config
         return self::$config[$key];
     }
 
+    /**
+     * Return a map of supported Magento versions and their recipe FQCN.
+     * @return array
+     */
     public static function getRecipes(): array
     {
         $result = [];
 
         $versions = static::get('supported_versions');
-        foreach ($versions as $version) {
-            $versionId = str_replace('.', '', $version);
-            $className = '\Devbox\Recipe\Mage'.$versionId;
+        foreach ($versions as $version => $versionConfig) {
+            $versionConfig['recipe_class'] = '\Devbox\Recipe\\'.$versionConfig['recipe_class'];
 
-            if (class_exists($className) && is_subclass_of($className, AbstractRecipe::class)) {
-                $result[$version] = $className;
+            if (class_exists($versionConfig['recipe_class']) && is_subclass_of($versionConfig['recipe_class'], AbstractRecipe::class)) {
+                $result[$version] = $versionConfig;
             }
         }
 

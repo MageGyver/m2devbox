@@ -11,7 +11,7 @@ use Symfony\Component\Process\Process;
 
 abstract class AbstractRecipe implements RecipeInterface
 {
-    const VERSION = 'MISSINGNO';
+    protected array $config = [];
 
     protected ?SymfonyStyle $io;
     protected Filesystem $filesystem;
@@ -20,6 +20,19 @@ abstract class AbstractRecipe implements RecipeInterface
     {
         $this->io = $io;
         $this->filesystem = new Filesystem();
+    }
+
+    /**
+     * Set recipe instance configuration.
+     *
+     * @param array $config
+     * @return AbstractRecipe
+     */
+    public function configure(array $config): self
+    {
+        $this->config = $config;
+
+        return $this;
     }
 
     abstract protected function getExpectedContainers(): array;
@@ -31,7 +44,7 @@ abstract class AbstractRecipe implements RecipeInterface
 
     protected function getVersionSpecificDockerComposeFiles(): array
     {
-        return [$this->getDockerFilename('docker-compose.mage-'.static::getVersion().'.yml')];
+        return [$this->getDockerFilename('docker-compose.mage-'.$this->getVersion().'.yml')];
     }
 
     protected function getDockerComposeFiles(): array
@@ -48,9 +61,14 @@ abstract class AbstractRecipe implements RecipeInterface
         return $this;
     }
 
-    public static function getVersion(): string
+    public function getVersion(): string
     {
-        return static::VERSION;
+        return $this->config['long_version'];
+    }
+
+    public function getShortVersion(): string
+    {
+        return $this->config['short_version'];
     }
 
     public function isBuilt(): bool
@@ -89,12 +107,12 @@ abstract class AbstractRecipe implements RecipeInterface
         }
     }
 
-    public function start()
+    public function start(): void
     {
         if ($this->isRunning()) {
             $this->status(
                 Devbox::extrapolateEnv(
-                    '<info>Magento '.static::getVersion().' is already up & running at '.
+                    '<info>Magento '.$this->getVersion().' is already up & running at '.
                     'http://$(MAGE_WEB_DOMAIN):$(DOCKER_WEB_PORT)/admin (User: '.
                     '$(MAGE_ADMIN_USER), password: $(MAGE_ADMIN_PASS))</info>'
                 )
@@ -104,7 +122,7 @@ abstract class AbstractRecipe implements RecipeInterface
 
         $this->installMagento();
 
-        $this->status('<info>Starting Magento %s...</info>', [static::getVersion()]);
+        $this->status('<info>Starting Magento %s...</info>', [$this->getVersion()]);
         $this->inDocker(
             'web',
             'chown -R www-data:www-data /var/www/html/',
@@ -114,7 +132,7 @@ abstract class AbstractRecipe implements RecipeInterface
 
         $this->status(
             Devbox::extrapolateEnv(
-                '<info>Magento '.static::getVersion().' is now up & running at '.
+                '<info>Magento '.$this->getVersion().' is now up & running at '.
                 'http://$(MAGE_WEB_DOMAIN):$(DOCKER_WEB_PORT)/admin (User: '.
                 '$(MAGE_ADMIN_USER), password: $(MAGE_ADMIN_PASS))</info>'
             )
@@ -125,22 +143,22 @@ abstract class AbstractRecipe implements RecipeInterface
 
     abstract protected function emptyDb();
 
-    public function stop()
+    public function stop(): void
     {
         if (!$this->isRunning()) {
-            $this->status('<info>Magento %s is already stopped.</info>', [static::getVersion()]);
+            $this->status('<info>Magento %s is already stopped.</info>', [$this->getVersion()]);
             return;
         }
 
-        $this->status('<info>Stopping Magento %s...</info>', [static::getVersion()]);
+        $this->status('<info>Stopping Magento %s...</info>', [$this->getVersion()]);
         $this->dockerComposeStop();
 
         $this->status(
-            '<info>Magento '.static::getVersion().' is now stopped.</info>'
+            '<info>Magento '.$this->getVersion().' is now stopped.</info>'
         );
     }
 
-    public function clear()
+    public function clear(): void
     {
         if (posix_getuid() !== 0) {
             $this->status('<error>Please run this command with root privileges!</error>');
@@ -151,7 +169,7 @@ abstract class AbstractRecipe implements RecipeInterface
             return;
         }
 
-        $this->status('<info>Clearing Magento %s...</info>', [static::getVersion()]);
+        $this->status('<info>Clearing Magento %s...</info>', [$this->getVersion()]);
         $this->stop();
         $this->emptyDb();
 
@@ -163,12 +181,12 @@ abstract class AbstractRecipe implements RecipeInterface
 
     protected function getState(string $key)
     {
-        return State::get('mage_'.static::getVersion().'.'.$key);
+        return State::get('mage_'.$this->getVersion().'.'.$key);
     }
 
     protected function setState(string $key, $value)
     {
-        State::set('mage_'.static::getVersion().'.'.$key, $value);
+        State::set('mage_'.$this->getVersion().'.'.$key, $value);
     }
 
     public function isRunning(): bool
@@ -177,19 +195,20 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     /**
-     * @param array        $commandLine Command line to execute (one array element per command argument)
-     * @param string|null &$output      (Optional) Command output
+     * @param array        $commandLine         Command line to execute (one array element per command argument)
+     * @param string|null &$output              (Optional) Command output
      * @param bool         $showOutputInSpinner Show current output line next to spinner animation
-     * @return int                  Exit code of the command
+     * @param bool         $allocateTty         Allocate a tty
+     * @return int|null    Exit code of the command
      */
-    public function exec(array $commandLine, string &$output = null, bool $showOutputInSpinner = true): int
+    public function exec(array $commandLine, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
     {
         $io = $this->io;
         $spinner = null;
 
         if ($io->isVerbose()) {
             $io->writeln('<comment>[executing]</comment> '.implode(' ', $commandLine));
-        } else {
+        } elseif (!$allocateTty) {
             $spinner = new Spinner();
             $spinner->begin();
         }
@@ -204,22 +223,25 @@ abstract class AbstractRecipe implements RecipeInterface
 
         $p = new Process($commandLine);
         $p
+            ->setTty($allocateTty)
             ->setTimeout(3600)
             ->setIdleTimeout(600)
             ->start($callback)
         ;
 
-        while ($p->isRunning()) {
-            $spinner->spin();
+        if (!$io->isVerbose() && $spinner !== null) {
+            while ($p->isRunning()) {
+                $spinner->spin();
+            }
         }
 
-        if (!$io->isVerbose()) {
+        if (!$io->isVerbose() && $spinner !== null) {
             $spinner->end();
         } else {
             $p->wait($callback);
         }
 
-        if (!$p->isSuccessful()) {
+        if (!$allocateTty && !$p->isSuccessful()) {
             throw new ProcessFailedException($p);
         }
 
@@ -241,12 +263,13 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     /**
-     * @param string|string[] $commands
+     * @param string|array $commands
      * @param string|null     $output (Optional) Command output
      * @param bool            $showOutputInSpinner
-     * @return int
+     * @param bool            $allocateTty
+     * @return int|null
      */
-    public function dockerCompose($commands, string &$output = null, bool $showOutputInSpinner = true): int
+    public function dockerCompose($commands, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
     {
         // shell command to execute
         $commandLine = ['docker-compose'];
@@ -264,7 +287,7 @@ abstract class AbstractRecipe implements RecipeInterface
         array_push($commandLine, ...$commands);
 
         // execute command line
-        return $this->exec($commandLine, $output, $showOutputInSpinner);
+        return $this->exec($commandLine, $output, $showOutputInSpinner, $allocateTty);
     }
 
     /**
@@ -305,7 +328,8 @@ abstract class AbstractRecipe implements RecipeInterface
      */
     protected function getMageSrcDir(): string
     {
-        return DB_ROOT.'/mage_src/'.static::getVersion().'/';
+        /** @psalm-suppress UndefinedConstant */
+        return DB_ROOT.'/mage_src/'.$this->getVersion().'/';
     }
 
     /**
@@ -313,6 +337,7 @@ abstract class AbstractRecipe implements RecipeInterface
      */
     protected function getAppCodeDir(): string
     {
+        /** @psalm-suppress UndefinedConstant */
         return DB_ROOT.'/app_code/';
     }
 
@@ -332,6 +357,7 @@ abstract class AbstractRecipe implements RecipeInterface
      */
     protected function getDockerFilename(string $file): string
     {
+        /** @psalm-suppress UndefinedConstant */
         return DOCKER_CONFIGS.'/'.ltrim($file, '/');
     }
 

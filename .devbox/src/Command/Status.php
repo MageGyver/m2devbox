@@ -4,8 +4,8 @@
 
 namespace Devbox\Command;
 
-use Devbox\RecipeInterface;
 use Devbox\Service\Config;
+use Devbox\Service\RecipeLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,9 +37,9 @@ class Status extends Command
         $tableRows = [];
 
         $recipes = Config::getRecipes();
-        foreach ($recipes as $version => $className) {
-            /** @var RecipeInterface $instance */
-            $instance = new $className($io);
+        foreach ($recipes as $version => $versionConfig) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $instance = RecipeLoader::get($version, $io);
 
             $tableRows[] = [
                 '<options=bold>'.$version.'</>',

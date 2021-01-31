@@ -16,13 +16,14 @@ class RecipeLoader
      */
     public static function get(string $version, ?SymfonyStyle $io = null): RecipeInterface
     {
-        if (!in_array($version, Config::get('supported_versions'))) {
+        if (!array_key_exists($version, Config::get('supported_versions'))) {
             throw new Exception('Version not supported!');
         }
 
         $recipes = Config::getRecipes();
         /** @var RecipeInterface $recipe */
-        $recipe = new $recipes[$version]();
+        $recipe = new $recipes[$version]['recipe_class']();
+        $recipe->configure($recipes[$version]);
         $recipe->setIo($io);
 
         return $recipe;
@@ -38,11 +39,8 @@ class RecipeLoader
         $recipes = Config::getRecipes();
         $result = [];
 
-        foreach ($recipes as $recipe) {
-            /** @var RecipeInterface $recipe */
-            $recipe = new $recipe();
-            $recipe->setIo($io);
-            $result[] = $recipe;
+        foreach ($recipes as $version => $versionConfig) {
+            $result[] = self::get($version, $io);
         }
 
         return $result;
@@ -55,18 +53,11 @@ class RecipeLoader
      */
     public static function getRunning(?SymfonyStyle $io = null): array
     {
-        $recipes = Config::getRecipes();
+        $result = self::getAll($io);
 
-        $result = [];
-
-        foreach ($recipes as $recipe) {
-            /** @var RecipeInterface $recipe */
-            $recipe = new $recipe();
-            if ($recipe->isRunning()) {
-                $recipe->setIo($io);
-                $result[$recipe->getVersion()] = $recipe;
-            }
-        }
+        $result = array_filter($result, function(RecipeInterface $recipe) {
+            return $recipe->isRunning();
+        });
 
         return $result;
     }

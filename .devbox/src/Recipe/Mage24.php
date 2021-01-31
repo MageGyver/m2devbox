@@ -5,16 +5,14 @@ namespace Devbox\Recipe;
 use Devbox\AbstractRecipe;
 use Devbox\Devbox;
 
-class Mage241 extends AbstractRecipe
+class Mage24 extends AbstractRecipe
 {
-    const VERSION = '2.4.1';
-
     protected function getExpectedContainers(): array
     {
         return [
-            'mage2devbox-241-db',
-            'mage2devbox-241-elastic',
-            'mage2devbox-241-web',
+            "mage2devbox-{$this->getShortVersion()}-db",
+            "mage2devbox-{$this->getShortVersion()}-elastic",
+            "mage2devbox-{$this->getShortVersion()}-web",
         ];
     }
 
@@ -37,7 +35,7 @@ class Mage241 extends AbstractRecipe
             'web',
             'composer create-project                                             \\
             --repository-url=https://repo.magento.com/                                    \\
-            magento/project-community-edition='.static::getVersion().'                    \\
+            magento/project-community-edition='.$this->getVersion().'                    \\
             /var/www/.mageinstall.tmp/                                                    \\
             && rsync -avzh --remove-source-files /var/www/.mageinstall.tmp/ /var/www/html \\
             && find /var/www/.mageinstall.tmp -type d -empty -delete',
@@ -68,9 +66,9 @@ class Mage241 extends AbstractRecipe
             return;
         }
 
-        $this->status('<info>Installing Magento %s...</info>', [static::getVersion()]);
+        $this->status('<info>Installing Magento %s...</info>', [$this->getVersion()]);
 
-        $installCommand = <<<'COMMAND'
+        $installCommand = <<<COMMAND
             /var/www/html/bin/magento setup:install                                 \
                 --admin-firstname=Admin                                             \
                 --admin-lastname=Admin                                              \
@@ -79,8 +77,8 @@ class Mage241 extends AbstractRecipe
                 --admin-password="$(MAGE_ADMIN_PASS)"                               \
                 --base-url="http://$(MAGE_WEB_DOMAIN):$(DOCKER_WEB_PORT)/"          \
                 --backend-frontname=admin                                           \
-                --db-host="mage2devbox-241-db"                                      \
-                --db-name="magento2_241"                                            \
+                --db-host="mage2devbox-{$this->getShortVersion()}-db"               \
+                --db-name="magento2_{$this->getShortVersion()}"                     \
                 --db-user="magento2"                                                \
                 --db-password="magento2"                                            \
                 --language="$(MAGE_LANG)"                                           \
@@ -91,13 +89,13 @@ class Mage241 extends AbstractRecipe
                 --base-url-secure="https://$(MAGE_WEB_DOMAIN):$(DOCKER_WEB_PORT)/"  \
                 --use-secure-admin=0                                                \
                 --session-save=files                                                \
-                --elasticsearch-host="mage2devbox-241-elastic"                      \
+                --elasticsearch-host="mage2devbox-{$this->getShortVersion()}-elastic" \
                 --elasticsearch-port="$(DOCKER_ES_PORT)"                            \
             && composer require markshust/magento2-module-disabletwofactorauth      \
             && bin/magento module:enable MarkShust_DisableTwoFactorAuth             \
             && bin/magento setup:upgrade                                            \
             && bin/magento config:set twofactorauth/general/enable 0                \
-            && chown -R www-data:www-data /var/www/html/                            \
+            && chown -R www-data:www-data /var/www/html/
 COMMAND;
         $installCommand = Devbox::extrapolateEnv($installCommand);
 
@@ -106,7 +104,7 @@ COMMAND;
 
     protected function emptyDb()
     {
-        $command = "mysqldump -u magento2 -pmagento2 --add-drop-table --no-data magento2_241 | grep ^DROP | mysql -u magento2 -pmagento2 magento2_241";
+        $command = "mysqldump -u magento2 -pmagento2 --add-drop-table --no-data magento2_{$this->getShortVersion()} | grep ^DROP | mysql -u magento2 -pmagento2 magento2_{$this->getShortVersion()}";
 
         $this->status('<info>Emptying database...</info>');
         $this->inDocker('db', $command);
