@@ -205,42 +205,4 @@ class Config
 
         return null;
     }
-
-    /**
-     * Return the filename for the .env file that contains Docker Compose related variables.
-     * @return string
-     */
-    public static function getDockerEnvFilename(): string
-    {
-        return 'docker.env';
-    }
-
-    /**
-     * Make sure the Docker Compose .env file exists.
-     * Create a default file, if it does not exist.
-     */
-    public static function ensureDockerEnv(): void
-    {
-        $configDir = self::getConfigDir();
-        $dockerEnv = $configDir.'/'.self::getDockerEnvFilename();
-
-        if (!file_exists($dockerEnv)) {
-            file_put_contents($dockerEnv, <<<ENV
-COMPOSE_PROJECT_NAME=mage2devbox
-
-DOCKER_WEB_PORT=8080
-DOCKER_DB_PORT=33306
-DOCKER_ES_PORT=9200
-DOCKER_ES_CONTROL_PORT=9300
-
-TIMEZONE=Europe/Berlin
-MAGE_WEB_DOMAIN=m2.docker
-MAGE_ADMIN_USER=admin
-MAGE_ADMIN_PASS=Admin123!
-MAGE_LANG=de_DE
-MAGE_CURRENCY=EUR
-ENV
-);
-        }
-    }
 }

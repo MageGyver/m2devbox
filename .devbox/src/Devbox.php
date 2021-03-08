@@ -92,6 +92,8 @@ class Devbox extends Application
     {
         if (preg_match('/\$\(.*\)/mU', $string) === 1) {
             $replacements = [];
+
+            // @todo #security: naïvely walk $_ENV or instead walk a white-listed subset of it?
             array_walk($_ENV, function ($v, $k) use (&$replacements) {
                 $replacements['$('.$k.')'] = $v;
             });

@@ -125,8 +125,8 @@ abstract class AbstractRecipe implements RecipeInterface
             $this->status(
                 Devbox::extrapolateEnv(
                     '<info>Magento '.$this->getVersion().' is already up & running at '.
-                    'http://$(MAGE_WEB_DOMAIN):$(DOCKER_WEB_PORT)/admin (User: '.
-                    '$(MAGE_ADMIN_USER), password: $(MAGE_ADMIN_PASS))</info>'
+                    'http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/admin (User: '.
+                    '$(M2D_MAGE_ADMIN_USER), password: $(M2D_MAGE_ADMIN_PASS))</info>'
                 )
             );
             return;
@@ -144,8 +144,8 @@ abstract class AbstractRecipe implements RecipeInterface
         $this->status(
             Devbox::extrapolateEnv(
                 '<info>Magento '.$this->getVersion().' is now up & running at '.
-                'http://$(MAGE_WEB_DOMAIN):$(DOCKER_WEB_PORT)/admin (User: '.
-                '$(MAGE_ADMIN_USER), password: $(MAGE_ADMIN_PASS))</info>'
+                'http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/admin (User: '.
+                '$(M2D_MAGE_ADMIN_USER), password: $(M2D_MAGE_ADMIN_PASS))</info>'
             )
         );
     }
@@ -205,7 +205,7 @@ abstract class AbstractRecipe implements RecipeInterface
                     if ($needsSudo) {
                         if ($this->dirIsInsideHome($dir)) {
                             $this->status('<comment>sudo rm -rf %s</comment>', [$dir]);
-                            $this->exec(['sudo', 'rm', '-rf', $dir], $output, false, true);
+                            $this->exec(['sudo', 'rm', '-rf', $dir], [], $output, false, true);
                         }
                     } else {
                         $this->filesystem->remove($dir);
@@ -234,13 +234,14 @@ abstract class AbstractRecipe implements RecipeInterface
 
     /**
      * @param array        $commandLine         Command line to execute (one array element per command argument)
+     * @param array        $env                 ENV vars for the process
      * @param string|null &$output              (Optional) Command output
      * @param bool         $showOutputInSpinner Show current output line next to spinner animation
      * @param bool         $allocateTty         Allocate a tty
      * @return int|null    Exit code of the command
      * @throws Exception
      */
-    public function exec(array $commandLine, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
+    public function exec(array $commandLine, array $env = [], string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
     {
         $io = $this->io;
         $spinner = null;
@@ -259,17 +260,6 @@ abstract class AbstractRecipe implements RecipeInterface
                 $spinner->setMessage($buffer);
             }
         };
-
-        // set env vars for Docker Compose yml
-        $env = [
-            'PHP_IMG_VERSION' => $this->config['php_img_version'],
-            'MAGE_SHORT_VERSION' => $this->getShortVersion(),
-            'DB_DIR' => $this->getDbDir(),
-            'MAGE_SRC' => $this->getMageSrcDir(),
-            'APP_CODE' => $this->getAppCodeDir(),
-            'COMPOSER_CACHE' => Config::getComposerHome(),
-            'COMPOSER_AUTH' => Config::getComposerAuth(),
-        ];
 
         // set process timeout only if we don't allocate a tty
         $timeout = $allocateTty ? null : 3600;
@@ -323,7 +313,6 @@ abstract class AbstractRecipe implements RecipeInterface
      * @param bool         $allocateTty
      * @return int|null
      * @throws Exception
-     * @throws Exception
      */
     public function dockerCompose($commands, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
     {
@@ -342,8 +331,19 @@ abstract class AbstractRecipe implements RecipeInterface
         }
         array_push($commandLine, ...$commands);
 
+        // set env vars for Docker Compose yml
+        $env = [
+            '_M2D_DOCKER_PHP_IMG_VERSION' => $this->config['php_img_version'],
+            '_M2D_MAGE_SHORT_VERSION'     => $this->getShortVersion(),
+            '_M2D_DB_DIR'                 => $this->getDbDir(),
+            '_M2D_MAGE_SRC_DIR'           => $this->getMageSrcDir(),
+            '_M2D_APP_CODE_DIR'           => $this->getAppCodeDir(),
+            '_M2D_COMPOSER_CACHE_DIR'     => Config::getComposerHome(),
+            '_M2D_COMPOSER_AUTH_FILE'     => Config::getComposerAuth(),
+        ];
+
         // execute command line
-        return $this->exec($commandLine, $output, $showOutputInSpinner, $allocateTty);
+        return $this->exec($commandLine, $env, $output, $showOutputInSpinner, $allocateTty);
     }
 
     /**
@@ -351,12 +351,11 @@ abstract class AbstractRecipe implements RecipeInterface
      *
      * @param string      $service        Compose service name
      * @param string      $command        Command to run
-     * @param bool        $noDeps         Start without dependencies
      * @param string|null $waitForService Wait for a service to become healthy. This only works for services which
      *                                    expose a health status!
      * @throws Exception
      */
-    protected function inDocker(string $service, string $command, bool $noDeps = true, ?string $waitForService = null)
+    protected function inDocker(string $service, string $command, ?string $waitForService = null)
     {
         $wasRunning = $this->isRunning();
         if (!$wasRunning) {
@@ -410,7 +409,7 @@ abstract class AbstractRecipe implements RecipeInterface
 
     /**
      * @return string
-     * @todo
+     * @todo: leave this hard-coded?
      */
     protected function getAppCodeDir(): string
     {

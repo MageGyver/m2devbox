@@ -55,7 +55,7 @@ class Mage23 extends AbstractRecipe
         $this->status('<info>Composer install...</info> <comment>(this might take several minutes)</comment>');
         $this->inDocker(
             'web',
-            'composer install'
+            'composer install --prefer-dist --no-interaction'
         );
     }
 
@@ -75,20 +75,20 @@ class Mage23 extends AbstractRecipe
                 --admin-firstname=Admin                                             \
                 --admin-lastname=Admin                                              \
                 --admin-email="admin@example.com"                                   \
-                --admin-user="$(MAGE_ADMIN_USER)"                                   \
-                --admin-password="$(MAGE_ADMIN_PASS)"                               \
-                --base-url="http://$(MAGE_WEB_DOMAIN):$(DOCKER_WEB_PORT)/"          \
+                --admin-user="$(M2D_MAGE_ADMIN_USER)"                               \
+                --admin-password="$(M2D_MAGE_ADMIN_PASS)"                           \
+                --base-url="http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/"         \
                 --backend-frontname=admin                                           \
                 --db-host="mage2devbox-{$this->getShortVersion()}-db"               \
                 --db-name="magento2_{$this->getShortVersion()}"                     \
                 --db-user="magento2"                                                \
                 --db-password="magento2"                                            \
-                --language="$(MAGE_LANG)"                                           \
-                --currency="$(MAGE_CURRENCY)"                                       \
-                --timezone="$(TIMEZONE)"                                            \
+                --language="$(M2D_MAGE_LANG)"                                       \
+                --currency="$(M2D_MAGE_CURRENCY)"                                   \
+                --timezone="$(M2D_TIMEZONE)"                                        \
                 --use-rewrites=1                                                    \
                 --use-secure=0                                                      \
-                --base-url-secure="https://$(MAGE_WEB_DOMAIN):$(DOCKER_WEB_PORT)/"  \
+                --base-url-secure="https://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/" \
                 --use-secure-admin=0                                                \
                 --session-save=files                                                \
             && chown -R www-data:www-data /var/www/html/
@@ -98,7 +98,6 @@ COMMAND;
         $this->inDocker(
             'web',
             $installCommand,
-            false,
             'db'
         );
     }
