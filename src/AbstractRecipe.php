@@ -409,7 +409,6 @@ abstract class AbstractRecipe implements RecipeInterface
 
     /**
      * @return string
-     * @todo: leave this hard-coded?
      */
     protected function getAppCodeDir(): string
     {
