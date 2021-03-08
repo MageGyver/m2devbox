@@ -414,7 +414,7 @@ abstract class AbstractRecipe implements RecipeInterface
     protected function getAppCodeDir(): string
     {
         /** @psalm-suppress UndefinedConstant */
-        return dirname(DB_ROOT).'/app_code/';
+        return CWD.'/app_code/';
     }
 
     /**

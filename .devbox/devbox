@@ -11,6 +11,7 @@ use Dotenv\Dotenv;
 
 $cwd = getcwd();
 
+define('CWD', $cwd);
 define('DB_ROOT', __DIR__);
 
 require DB_ROOT.'/vendor/autoload.php';
@@ -29,7 +30,7 @@ foreach ($defaultEnv as $key => $value) {
 }
 
 // load custom ENV vars from $CWD/.env
-$dotenv = Dotenv::createMutable($cwd);
+$dotenv = Dotenv::createMutable(CWD);
 $dotenv->load();
 
 // init and run application
