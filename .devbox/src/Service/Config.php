@@ -3,6 +3,7 @@
 namespace Devbox\Service;
 
 use Devbox\AbstractRecipe;
+use Exception;
 
 class Config
 {
@@ -76,5 +77,170 @@ class Config
         uksort($result, 'version_compare');
 
         return $result;
+    }
+
+    /**
+     * Get the system user home directory (i.e. ~).
+     *
+     * @return string   Home directory (without trailing slash)
+     * @throws Exception
+     */
+    public static function getUserHomeDir(): string
+    {
+        $homedir = getenv('HOME');
+        if ($homedir === false || empty($homedir) || !is_dir($homedir)) {
+            $homedir = getenv('USERPROFILE');   // for windows users
+            if ($homedir === false || empty($homedir) || !is_dir($homedir)) {
+                throw new Exception('Could not determine system user $HOME directory!');
+            }
+        }
+
+        return $homedir;
+    }
+
+    /**
+     * Get the system cache directory (i.e. ~/.cache/mage2devbox).
+     *
+     * @return string   Cache directory (without trailing slash)
+     * @throws Exception
+     */
+    public static function getCacheDir(): string
+    {
+        $cacheDir = getenv('XDG_CACHE_HOME');
+        if ($cacheDir === false || empty($cacheDir) || !is_dir($cacheDir)) {
+            $homeDir = self::getUserHomeDir();
+            $cacheDir = $homeDir.'/.cache';
+        }
+
+        $cacheDir = $cacheDir.'/mage2devbox';
+
+        if (!is_dir($cacheDir)) {
+            mkdir($cacheDir, 0777, true);
+        }
+
+        return $cacheDir;
+    }
+
+    /**
+     * Get the system config directory (i.e. ~/.config/mage2devbox).
+     *
+     * @return string   Config directory (without trailing slash)
+     * @throws Exception
+     * @throws Exception
+     */
+    public static function getConfigDir(): string
+    {
+        $configDir = getenv('XDG_CONFIG_HOME');
+        if ($configDir === false || empty($configDir) || !is_dir($configDir)) {
+            $homeDir = self::getUserHomeDir();
+            $configDir = $homeDir.'/.config';
+        }
+
+        $configDir = $configDir.'/mage2devbox';
+
+        if (!is_dir($configDir)) {
+            mkdir($configDir, 0777, true);
+        }
+
+        return $configDir;
+    }
+
+    /**
+     * Get the absolute path to the global Composer binary.
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function getComposerBinary(): string
+    {
+        $bin = exec('which composer', $output, $exitcode);
+
+        if ($exitcode > 0) {
+            throw new Exception('Global Composer installation seems to be missing!');
+        }
+
+        if (!file_exists($bin)) {
+            throw new Exception('Composer binary "'.$bin.'" does not exist!');
+        }
+
+        return $bin;
+    }
+
+    /**
+     * Get the absolute path to the global Composer directory.
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function getComposerHome(): string
+    {
+        $bin = self::getComposerBinary();
+        $composerDir = exec(escapeshellcmd($bin).' config --global home');
+
+        if (!is_dir($composerDir)) {
+            throw new Exception('Composer home directory "'.$composerDir.'" does not exist!');
+        }
+
+        if (!is_readable($composerDir)) {
+            throw new Exception('Composer home directory "'.$composerDir.'" is not readable!');
+        }
+
+        return $composerDir;
+    }
+
+    /**
+     * Get the absolute path to the global Composer auth file.
+     *
+     * @return string|null
+     * @throws Exception
+     */
+    public static function getComposerAuth(): ?string
+    {
+        $composerHome = self::getComposerHome();
+        $authFile = $composerHome.'/auth.json';
+
+        if (file_exists($authFile) && is_readable($authFile)) {
+            return $authFile;
+        }
+
+        return null;
+    }
+
+    /**
+     * Return the filename for the .env file that contains Docker Compose related variables.
+     * @return string
+     */
+    public static function getDockerEnvFilename(): string
+    {
+        return 'docker.env';
+    }
+
+    /**
+     * Make sure the Docker Compose .env file exists.
+     * Create a default file, if it does not exist.
+     */
+    public static function ensureDockerEnv(): void
+    {
+        $configDir = self::getConfigDir();
+        $dockerEnv = $configDir.'/'.self::getDockerEnvFilename();
+
+        if (!file_exists($dockerEnv)) {
+            file_put_contents($dockerEnv, <<<ENV
+COMPOSE_PROJECT_NAME=mage2devbox
+
+DOCKER_WEB_PORT=8080
+DOCKER_DB_PORT=33306
+DOCKER_ES_PORT=9200
+DOCKER_ES_CONTROL_PORT=9300
+
+TIMEZONE=Europe/Berlin
+MAGE_WEB_DOMAIN=m2.docker
+MAGE_ADMIN_USER=admin
+MAGE_ADMIN_PASS=Admin123!
+MAGE_LANG=de_DE
+MAGE_CURRENCY=EUR
+ENV
+);
+        }
     }
 }

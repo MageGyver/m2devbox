@@ -33,13 +33,13 @@ class Mage24 extends AbstractRecipe
         $this->createMageSrcDir();
         $this->inDocker(
             'web',
-            'composer create-project                                             \\
+            'cd /var/www/html                                                    \\
+            && composer create-project                                                    \\
             --repository-url=https://repo.magento.com/                                    \\
-            magento/project-community-edition='.$this->getVersion().'                    \\
+            magento/project-community-edition='.$this->getVersion().'                     \\
             /var/www/.mageinstall.tmp/                                                    \\
             && rsync -avzh --remove-source-files /var/www/.mageinstall.tmp/ /var/www/html \\
-            && find /var/www/.mageinstall.tmp -type d -empty -delete',
-            [$this->getMageSrcDir(), '/var/www/html']
+            && find /var/www/.mageinstall.tmp -type d -empty -delete'
         );
     }
 
@@ -54,7 +54,10 @@ class Mage24 extends AbstractRecipe
         }
 
         $this->status('<info>Composer install...</info> <comment>(this might take several minutes)</comment>');
-        $this->inDocker('web', 'composer install', [$this->getMageSrcDir(), '/var/www/html']);
+        $this->inDocker(
+            'web',
+            'composer install'
+        );
     }
 
     protected function installMagento()
@@ -99,15 +102,12 @@ class Mage24 extends AbstractRecipe
 COMMAND;
         $installCommand = Devbox::extrapolateEnv($installCommand);
 
-        $this->inDocker('web', $installCommand, [$this->getMageSrcDir(), '/var/www/html'], false);
-    }
-
-    protected function emptyDb()
-    {
-        $command = "mysqldump -u magento2 -pmagento2 --add-drop-table --no-data magento2_{$this->getShortVersion()} | grep ^DROP | mysql -u magento2 -pmagento2 magento2_{$this->getShortVersion()}";
-
-        $this->status('<info>Emptying database...</info>');
-        $this->inDocker('db', $command);
+        $this->inDocker(
+            'web',
+            $installCommand,
+            false,
+            'db'
+        );
     }
 
 }

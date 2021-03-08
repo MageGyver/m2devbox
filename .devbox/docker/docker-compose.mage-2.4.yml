@@ -1,27 +1,26 @@
 services:
   db:
     environment:
-      MYSQL_DATABASE: "magento2_241"
-    container_name: "mage2devbox-241-db"
-    image: mariadb:10.4
+      MYSQL_DATABASE: "magento2_${MAGE_SHORT_VERSION}"
+    container_name: "mage2devbox-${MAGE_SHORT_VERSION}-db"
     networks:
       - elastic
 
   web:
-    container_name: "mage2devbox-241-web"
+    container_name: "mage2devbox-${MAGE_SHORT_VERSION}-web"
     build:
-      context: ./php/7.3
+      context: ./php/${PHP_IMG_VERSION}
     depends_on:
       - elastic
       - db
     volumes:
-      - ../../mage_src/2.4.1/:/var/www/html:cached
-      - ../../app_code/:/var/www/html/app/code:cached
+      - "${MAGE_SRC}:/var/www/html:cached"
+      - "${APP_CODE}:/var/www/html/app/code:cached"
     networks:
       - elastic
 
   elastic:
-    container_name: "mage2devbox-241-elastic"
+    container_name: "mage2devbox-${MAGE_SHORT_VERSION}-elastic"
     build:
       context: ./elastic
     environment:

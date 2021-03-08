@@ -1,0 +1,15 @@
+services:
+  db:
+    environment:
+      MYSQL_DATABASE: "magento2_${MAGE_SHORT_VERSION}"
+    container_name: "mage2devbox-${MAGE_SHORT_VERSION}-db"
+
+  web:
+    container_name: "mage2devbox-${MAGE_SHORT_VERSION}-web"
+    depends_on:
+      - db
+    build:
+      context: ./php/${PHP_IMG_VERSION}
+    volumes:
+      - "${MAGE_SRC}:/var/www/html:cached"
+      - "${APP_CODE}:/var/www/html/app/code:cached"

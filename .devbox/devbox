@@ -6,16 +6,22 @@
  */
 
 use Devbox\Devbox;
+use Devbox\Service\Config;
+use Dotenv\Dotenv;
 
-require __DIR__.'/vendor/autoload.php';
+define('DB_ROOT', __DIR__);
 
-define('DB_ROOT', dirname(__DIR__));
+require DB_ROOT.'/vendor/autoload.php';
+
 define('DB_SRC', __DIR__.'/src');
 define('DB_VERSION', '0.1');
 define('DOCKER_CONFIGS', __DIR__.'/docker');
 
+// make sure that a .env for Docker compose exists
+Config::ensureDockerEnv();
+
 // load .env variables into $_ENV
-$dotenv = Dotenv\Dotenv::createImmutable(DB_ROOT);
+$dotenv = Dotenv::createImmutable(Config::getConfigDir(), [Config::getDockerEnvFilename()]);
 $dotenv->load();
 
 // init and run application

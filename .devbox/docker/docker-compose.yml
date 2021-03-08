@@ -2,16 +2,27 @@ version: '3'
 
 services:
   db:
+    image: mariadb:10.3.16      # use 10.3.16 to avoid this bug: https://github.com/docker-library/mariadb/issues/262
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: "magento2"
       MYSQL_PASSWORD: "magento2"
       MYSQL_ROOT_HOST: "%"
+      MYSQL_INITDB_SKIP_TZINFO: 1
     expose:
       - 3306
     ports:
       - "${DOCKER_DB_PORT}:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - "${DB_DIR}:/var/lib/mysql:cached"
+
 
   web:
     build:

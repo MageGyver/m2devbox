@@ -10,6 +10,11 @@ class Devbox extends Application
     {
         parent::__construct($name, $version);
 
+        register_shutdown_function(function() {
+            // make sure we show the terminal cursor, in case it was hidden before
+            echo "\033[?25h";
+        });
+
         $commands = $this->findCommands();
         $this->_addCommands($commands);
 

@@ -3,7 +3,9 @@
 namespace Devbox;
 
 use AlecRabbit\Snake\Spinner;
+use Devbox\Service\Config;
 use Devbox\Service\State;
+use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -44,7 +46,12 @@ abstract class AbstractRecipe implements RecipeInterface
 
     protected function getVersionSpecificDockerComposeFiles(): array
     {
-        return [$this->getDockerFilename('docker-compose.mage-'.$this->getVersion().'.yml')];
+        $files = $this->config['compose_files'];
+        array_walk($files, function(&$filename) {
+            $filename = $this->getDockerFilename($filename);
+        });
+
+        return $files;
     }
 
     protected function getDockerComposeFiles(): array
@@ -107,6 +114,11 @@ abstract class AbstractRecipe implements RecipeInterface
         }
     }
 
+    /**
+     * Start a Magento dev environment.
+     *
+     * @throws Exception
+     */
     public function start(): void
     {
         if ($this->isRunning()) {
@@ -125,8 +137,7 @@ abstract class AbstractRecipe implements RecipeInterface
         $this->status('<info>Starting Magento %s...</info>', [$this->getVersion()]);
         $this->inDocker(
             'web',
-            'chown -R www-data:www-data /var/www/html/',
-            [$this->getMageSrcDir(), '/var/www/html']
+            'chown -R www-data:www-data /var/www/html/'
         );
         $this->dockerComposeUp(true);
 
@@ -140,8 +151,6 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     abstract protected function installMagento();
-
-    abstract protected function emptyDb();
 
     public function stop(): void
     {
@@ -158,24 +167,53 @@ abstract class AbstractRecipe implements RecipeInterface
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function clear(): void
     {
-        if (posix_getuid() !== 0) {
-            $this->status('<error>Please run this command with root privileges!</error>');
-            $this->status(
-                '<comment>Clearing Magento source files from the mounted directory is not possible without '.
-                'root privileges because these files are owned by another user.</comment>'
-            );
-            return;
+        $dirs = [$this->getMageSrcDir(), $this->getDbDir()];
+
+        $needsSudo = false;
+        foreach ($dirs as $dir) {
+            if (!$needsSudo && $this->filesystem->exists($dir)) {
+                $currentUser = posix_getuid();
+                $dirOwner    = fileowner($dir);
+                $needsSudo = ($dirOwner !== false) && ($dirOwner !== $currentUser);
+
+                if ($needsSudo) {
+                    $continue = $this->io->confirm(
+                        "Clearing Magento source files requires root privileges, because the files are not owned by your current user.\n"
+                        . "You will be asked for your root password before the files will be deleted.\n"
+                        . "Will you know the root password when it is required?",
+                        false
+                    );
+
+                    if (!$continue) {
+                        return;
+                    }
+                }
+            }
         }
 
         $this->status('<info>Clearing Magento %s...</info>', [$this->getVersion()]);
         $this->stop();
-        $this->emptyDb();
 
-        $dir = $this->getMageSrcDir();
-        if ($this->filesystem->exists($dir)) {
-            $this->filesystem->remove($dir);
+        foreach ($dirs as $dir) {
+            try {
+                if ($this->filesystem->exists($dir)) {
+                    if ($needsSudo) {
+                        if ($this->dirIsInsideHome($dir)) {
+                            $this->status('<comment>sudo rm -rf %s</comment>', [$dir]);
+                            $this->exec(['sudo', 'rm', '-rf', $dir], $output, false, true);
+                        }
+                    } else {
+                        $this->filesystem->remove($dir);
+                    }
+                }
+            } catch (Exception $e) {
+                $this->status('<info>'.$e->getMessage().'</info>');
+            }
         }
     }
 
@@ -200,13 +238,14 @@ abstract class AbstractRecipe implements RecipeInterface
      * @param bool         $showOutputInSpinner Show current output line next to spinner animation
      * @param bool         $allocateTty         Allocate a tty
      * @return int|null    Exit code of the command
+     * @throws Exception
      */
     public function exec(array $commandLine, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
     {
         $io = $this->io;
         $spinner = null;
 
-        if ($io->isVerbose()) {
+        if ($io && $io->isVerbose()) {
             $io->writeln('<comment>[executing]</comment> '.implode(' ', $commandLine));
         } elseif (!$allocateTty) {
             $spinner = new Spinner();
@@ -214,28 +253,43 @@ abstract class AbstractRecipe implements RecipeInterface
         }
 
         $callback = function ($type, $buffer) use ($io, $spinner, $showOutputInSpinner) {
-            if ($io->isVerbose()) {
-                $io->writeln("<info>\t" . strtoupper($type) . '</info> > ' . $buffer);
+            if ($io && $io->isVerbose()) {
+                $io->writeln("<info>\t" . strtoupper($type) . '</info> > ' . trim($buffer));
             } else if ($spinner !== null && $showOutputInSpinner) {
                 $spinner->setMessage($buffer);
             }
         };
 
+        // set env vars for Docker Compose yml
+        $env = [
+            'PHP_IMG_VERSION' => $this->config['php_img_version'],
+            'MAGE_SHORT_VERSION' => $this->getShortVersion(),
+            'DB_DIR' => $this->getDbDir(),
+            'MAGE_SRC' => $this->getMageSrcDir(),
+            'APP_CODE' => $this->getAppCodeDir(),
+            'COMPOSER_CACHE' => Config::getComposerHome(),
+            'COMPOSER_AUTH' => Config::getComposerAuth(),
+        ];
+
+        // set process timeout only if we don't allocate a tty
+        $timeout = $allocateTty ? null : 3600;
+
         $p = new Process($commandLine);
         $p
+            ->setEnv($env)
             ->setTty($allocateTty)
-            ->setTimeout(3600)
-            ->setIdleTimeout(600)
+            ->setTimeout($timeout)
+            ->setIdleTimeout($timeout)
             ->start($callback)
         ;
 
-        if (!$io->isVerbose() && $spinner !== null) {
+        if ($io && !$io->isVerbose() && $spinner !== null) {
             while ($p->isRunning()) {
                 $spinner->spin();
             }
         }
 
-        if (!$io->isVerbose() && $spinner !== null) {
+        if ($io && !$io->isVerbose() && $spinner !== null) {
             $spinner->end();
         } else {
             $p->wait($callback);
@@ -264,10 +318,12 @@ abstract class AbstractRecipe implements RecipeInterface
 
     /**
      * @param string|array $commands
-     * @param string|null     $output (Optional) Command output
-     * @param bool            $showOutputInSpinner
-     * @param bool            $allocateTty
+     * @param string|null  $output (Optional) Command output
+     * @param bool         $showOutputInSpinner
+     * @param bool         $allocateTty
      * @return int|null
+     * @throws Exception
+     * @throws Exception
      */
     public function dockerCompose($commands, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
     {
@@ -293,54 +349,80 @@ abstract class AbstractRecipe implements RecipeInterface
     /**
      * Run a command in a Docker container.
      *
-     * @param string        $container    Container name
-     * @param string        $command      Command to run
-     * @param string[]|null $mountVolume  Optional volume mount ['/host/dir', '/container/dir']
-     * @param bool          $noDeps
+     * @param string      $service        Compose service name
+     * @param string      $command        Command to run
+     * @param bool        $noDeps         Start without dependencies
+     * @param string|null $waitForService Wait for a service to become healthy. This only works for services which
+     *                                    expose a health status!
+     * @throws Exception
      */
-    protected function inDocker(string $container, string $command, array $mountVolume = null, bool $noDeps = true)
+    protected function inDocker(string $service, string $command, bool $noDeps = true, ?string $waitForService = null)
     {
-        $commands = ['run'];
-
-        if ($mountVolume) {
-            array_push(
-                $commands,
-                '-v', $mountVolume[0].':'.$mountVolume[1].':cached'
-            );
+        $wasRunning = $this->isRunning();
+        if (!$wasRunning) {
+            $this->dockerComposeUp(true);
         }
 
-        if ($noDeps) {
-            array_push($commands,'--no-deps');
-        }
-
-        array_push($commands,
-            '--rm',
-            $container,
-            '/bin/bash', '-c',
+        $commands = [
+            'exec',
+            '-T',
+            $service,
+            '/bin/bash',
+            '-c',
             $command
-        );
+        ];
+
+        if ($waitForService) {
+            $healthy = $this->waitForServiceToBecomeHealthy($waitForService);
+            if (!$healthy) {
+                throw new Exception('Service "'.$waitForService.'" is not healthy. Cannot run command.');
+            }
+        }
 
         $this->dockerCompose($commands);
+
+        if (!$wasRunning) {
+            $this->dockerComposeStop();
+        }
     }
 
     /**
+     * Get the Magento version-specific database directory on the host system.
+     *
      * @return string
+     * @throws Exception
+     */
+    protected function getDbDir(): string
+    {
+        return Config::getCacheDir().'/db/'.$this->getVersion().'/';
+    }
+
+    /**
+     * Get the Magento version-specific installation source directory on the host system.
+     *
+     * @return string
+     * @throws Exception
      */
     protected function getMageSrcDir(): string
     {
-        /** @psalm-suppress UndefinedConstant */
-        return DB_ROOT.'/mage_src/'.$this->getVersion().'/';
+        return Config::getCacheDir().'/mage_src/'.$this->getVersion().'/';
     }
 
     /**
      * @return string
+     * @todo
      */
     protected function getAppCodeDir(): string
     {
         /** @psalm-suppress UndefinedConstant */
-        return DB_ROOT.'/app_code/';
+        return dirname(DB_ROOT).'/app_code/';
     }
 
+    /**
+     * Create the Magento version-specific installation source directory on the host system.
+     *
+     * @throws Exception
+     */
     protected function createMageSrcDir()
     {
         $dir = $this->getMageSrcDir();
@@ -366,17 +448,28 @@ abstract class AbstractRecipe implements RecipeInterface
      *
      * @param string $file
      * @return string
+     * @throws Exception
      */
     protected function getMageFilename(string $file): string
     {
         return $this->getMageSrcDir().ltrim($file, '/');
     }
 
+    /**
+     * @param string $file
+     * @return bool
+     * @throws Exception
+     */
     protected function mageFileExists(string $file): bool
     {
         return file_exists($this->getMageFilename($file));
     }
 
+    /**
+     * @param string $file
+     * @return bool
+     * @throws Exception
+     */
     protected function mageDirExists(string $file): bool
     {
         return is_dir($this->getMageFilename($file));
@@ -395,5 +488,79 @@ abstract class AbstractRecipe implements RecipeInterface
 
             $this->io->writeln($message);
         }
+    }
+
+    /**
+     * Check, if directory $dir is inside the current user's home directory.
+     *
+     * @param string $dir
+     * @return bool
+     */
+    protected function dirIsInsideHome(string $dir): bool
+    {
+        if ($dir === '/') {
+            return false;
+        }
+
+        $dir = realpath($dir);
+        $home = realpath($_SERVER['HOME'] ?? '~');
+
+        if (strlen($dir) > 1 && strlen($home) > 1) {
+            return str_starts_with($dir, $home);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get service's container health status
+     *
+     * @param string $serviceName
+     * @return string
+     */
+    protected function getHealthiness(string $serviceName): string {
+        $p = new Process(['docker', 'inspect', '--format', '"{{.State.Health.Status}}"', 'mage2devbox-'.$this->getShortVersion().'-'.$serviceName]);
+        $p
+            ->setTty(false)
+            ->setTimeout(10)
+            ->setIdleTimeout(10)
+            ->run();
+
+        return trim($p->getOutput());
+    }
+
+    /**
+     * Check the container health status of the given service and wait for it to become healthy.
+     * This method is blocking and returns true when the container becomes healthy.
+     * It returns false when the container becomes unhealthy.
+     *
+     * @param string $serviceName
+     * @param int    $timeout       Timeout in seconds
+     * @return bool                 Healthiness status
+     */
+    protected function waitForServiceToBecomeHealthy(string $serviceName, int $timeout = 300): bool
+    {
+        $spinner = new Spinner();
+        $spinner->begin();
+        $spinner->setMessage('Waiting for '.$serviceName.' service to become ready...');
+
+        $timeout = microtime(true) + $timeout;
+
+        $status = $this->getHealthiness($serviceName);
+
+        while ($status !== '"healthy"') {
+            $spinner->spin();
+
+            if (($status === '"unhealthy"') || (microtime(true) > $timeout)) {
+                $spinner->end();
+                return false;
+            }
+
+            sleep(1);
+            $status = $this->getHealthiness($serviceName);
+        }
+
+        $spinner->end();
+        return true;
     }
 }

@@ -9,8 +9,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class RecipeLoader
 {
     /**
+     * Get the Recipe instance for a given Magento version.
+     *
      * @param string            $version
-     * @param SymfonyStyle|null $io
+     * @param SymfonyStyle|null $io         Console IO for status messages
      * @return RecipeInterface
      * @throws Exception
      */
@@ -30,6 +32,8 @@ class RecipeLoader
     }
 
     /**
+     * Get all Recipe instances.
+     *
      * @param SymfonyStyle|null $io
      * @return RecipeInterface[]
      * @throws Exception
@@ -47,6 +51,8 @@ class RecipeLoader
     }
 
     /**
+     * Get the Recipe instances for all running Magento versions.
+     *
      * @param SymfonyStyle|null $io
      * @return RecipeInterface[]
      * @throws Exception

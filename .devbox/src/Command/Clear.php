@@ -7,6 +7,7 @@ namespace Devbox\Command;
 use Devbox\Service\RecipeLoader;
 use Exception;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -20,6 +21,7 @@ class Clear extends Command
     {
         $this
             ->setDescription('Clear a Magento environment.')
+            ->addArgument('version', InputArgument::OPTIONAL, 'Magento version to clear. Omit to clear all versions.')
             ->setHelp('This command clears the given Magento version and removes it from the system.')
         ;
     }
@@ -29,21 +31,21 @@ class Clear extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            if (posix_getuid() !== 0) {
-                $io->writeln('<error>Please run this command with root privileges!</error>');
-                $io->writeln(
-                    '<comment>Clearing Magento source files from the mounted directory is not possible without '.
-                    'root privileges because these files are owned by another user.</comment>'
-                );
+            $version = $input->getArgument('version');
 
-                return Command::FAILURE;
+            if ($version !== null) {
+                $recipes = [RecipeLoader::get($version, $io)];
+            } else {
+                $recipes = RecipeLoader::getAll($io);
             }
 
+            if ($io->confirm('Are you sure you want to clear the given environments?', false)) {
+                foreach ($recipes as $recipe) {
+                    $recipe->clear();
+                    return Command::SUCCESS;
+                }
 
-            $recipes = RecipeLoader::getAll($io);
-
-            foreach ($recipes as $recipe) {
-                $recipe->clear();
+                return Command::FAILURE;
             }
 
             return Command::SUCCESS;

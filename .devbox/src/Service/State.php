@@ -6,16 +6,20 @@ class State
 {
     protected static ?array $state = null;
 
-    protected static function getStateFileName(): string
+    /**
+     * Gets the absolute file path to the state file.
+     *
+     * @return string
+     */
+    protected static function getStateFilePath(): string
     {
-        /** @psalm-suppress UndefinedConstant */
-        return DB_ROOT.'/state.json';
+        return Config::getConfigDir().'/state.json';
     }
 
     public static function load()
     {
         if (static::$state === null) {
-            $stateFile = static::getStateFileName();
+            $stateFile = static::getStateFilePath();
 
             if (!file_exists($stateFile)) {
                 file_put_contents($stateFile, '{}');
@@ -30,7 +34,7 @@ class State
     public static function save()
     {
         if (static::$state) {
-            $stateFile = static::getStateFileName();
+            $stateFile = static::getStateFilePath();
             file_put_contents($stateFile, json_encode(static::$state, JSON_PRETTY_PRINT));
         }
     }
