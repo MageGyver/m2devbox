@@ -80,25 +80,21 @@ abstract class AbstractRecipe implements RecipeInterface
 
     public function isBuilt(): bool
     {
-        $this->dockerCompose(
-            ['ps', '-a'],
+        $this->exec(
+            ['docker', 'ps', '-a', '-f', 'name=mage2devbox', '--format', '{{.Names}}'],
+            [],
             $output,
             false
         );
 
         if (is_string($output) && !empty($output)) {
             $output = explode("\n", $output);
-            array_splice($output, 0, 2);
 
             $expectedContainers = array_fill_keys($this->getExpectedContainers(), false);
 
-            foreach ($output as $line) {
-                $line = preg_split('/\s+/', $line);
-                if (count($line) > 0) {
-                    $container = $line[0];
-                    if (array_key_exists($container, $expectedContainers)) {
-                        $expectedContainers[$container] = true;
-                    }
+            foreach ($output as $container) {
+                if (array_key_exists($container, $expectedContainers)) {
+                    $expectedContainers[$container] = true;
                 }
             }
 
