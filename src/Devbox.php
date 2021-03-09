@@ -2,6 +2,7 @@
 
 namespace Devbox;
 
+use Devbox\Service\Config;
 use Symfony\Component\Console\Application;
 
 class Devbox extends Application
@@ -21,6 +22,8 @@ class Devbox extends Application
         if (in_array('Status', $commands)) {
             $this->setDefaultCommand('status');
         }
+
+        $this->exportDockerConfig();
     }
 
     /**
@@ -102,5 +105,41 @@ class Devbox extends Application
         }
 
         return $string;
+    }
+
+    /**
+     * Copy Docker config files from PHAR to global config dir.
+     * This is needed, because external programs like Docker can't access files
+     * stored in a PHAR.
+     *
+     * @throws \Exception
+     */
+    protected function exportDockerConfig()
+    {
+        $localDockerConfigAssetsDir = 'docker/';
+        $dockerConfigDir = Config::getDockerConfigDir();
+
+        $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($localDockerConfigAssetsDir));
+        $it->rewind();
+        while ($it->valid()) {
+            if (!$it->isDot()) {
+                $targetFile = $dockerConfigDir.'/'.$it->getSubPathName();
+
+                // only overwrite existing file if it's content differs
+                if (file_exists($targetFile)) {
+                    $localHash = hash('crc32c', file_get_contents($it->key()));
+                    $targetHash = hash('crc32c', file_get_contents($targetFile));
+
+                    if ($localHash !== $targetHash) {
+                        @copy($it->key(), $targetFile);
+                    }
+                } else {
+                    @mkdir(dirname($targetFile), 0755, true);
+                    @copy($it->key(), $targetFile);
+                }
+            }
+
+            $it->next();
+        }
     }
 }

@@ -126,7 +126,6 @@ class Config
      *
      * @return string   Config directory (without trailing slash)
      * @throws Exception
-     * @throws Exception
      */
     public static function getConfigDir(): string
     {
@@ -143,6 +142,23 @@ class Config
         }
 
         return $configDir;
+    }
+
+    /**
+     * Get the Docker config directory (i.e. ~/.config/mage2devbox/docker).
+     *
+     * @return string   Docker config directory (without trailing slash)
+     * @throws Exception
+     */
+    public static function getDockerConfigDir(): string
+    {
+        $dockerConfigDir = self::getConfigDir().'/docker';
+
+        if (!is_dir($dockerConfigDir)) {
+            mkdir($dockerConfigDir, 0777, true);
+        }
+
+        return $dockerConfigDir;
     }
 
     /**

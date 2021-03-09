@@ -17,8 +17,7 @@ define('DB_ROOT', __DIR__);
 require DB_ROOT.'/vendor/autoload.php';
 
 define('DB_SRC', __DIR__.'/src');
-define('DB_VERSION', '0.1');
-define('DOCKER_CONFIGS', __DIR__.'/docker');
+define('DB_VERSION', '@git@');
 
 // load default ENV vars form config
 $defaultEnv = Config::get('default_env');
@@ -30,8 +29,10 @@ foreach ($defaultEnv as $key => $value) {
 }
 
 // load custom ENV vars from $CWD/.env
-$dotenv = Dotenv::createMutable(CWD);
-$dotenv->load();
+if (file_exists(CWD.'/.env')) {
+    $dotenv = Dotenv::createMutable(CWD);
+    $dotenv->load();
+}
 
 // init and run application
 $devbox = new Devbox('Mage2 Devbox', DB_VERSION);

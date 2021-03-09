@@ -341,6 +341,7 @@ abstract class AbstractRecipe implements RecipeInterface
             '_M2D_COMPOSER_CACHE_DIR'     => Config::getComposerHome(),
             '_M2D_COMPOSER_AUTH_FILE'     => Config::getComposerAuth(),
         ];
+        $env = array_merge($env, Config::get('default_env'));
 
         // execute command line
         return $this->exec($commandLine, $env, $output, $showOutputInSpinner, $allocateTty);
@@ -442,11 +443,12 @@ abstract class AbstractRecipe implements RecipeInterface
      *
      * @param string $file
      * @return string
+     * @throws Exception
      */
     protected function getDockerFilename(string $file): string
     {
         /** @psalm-suppress UndefinedConstant */
-        return DOCKER_CONFIGS.'/'.ltrim($file, '/');
+        return Config::getDockerConfigDir().'/'.ltrim($file, '/');
     }
 
     /**
