@@ -17,7 +17,7 @@ define('DB_ROOT', __DIR__);
 require DB_ROOT.'/vendor/autoload.php';
 
 define('DB_SRC', __DIR__.'/src');
-define('DB_VERSION', '@git@');
+define('DB_VERSION', '@git_tag@');
 
 // load default ENV vars form config
 $defaultEnv = Config::get('default_env');
