@@ -10,9 +10,9 @@ class Mage24 extends AbstractRecipe
     protected function getExpectedContainers(): array
     {
         return [
-            "mage2devbox-{$this->getShortVersion()}-db",
-            "mage2devbox-{$this->getShortVersion()}-elastic",
-            "mage2devbox-{$this->getShortVersion()}-web",
+            "m2devbox-{$this->getShortVersion()}-db",
+            "m2devbox-{$this->getShortVersion()}-elastic",
+            "m2devbox-{$this->getShortVersion()}-web",
         ];
     }
 
@@ -80,7 +80,7 @@ class Mage24 extends AbstractRecipe
                 --admin-password="$(M2D_MAGE_ADMIN_PASS)"                           \
                 --base-url="http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/"         \
                 --backend-frontname=admin                                           \
-                --db-host="mage2devbox-{$this->getShortVersion()}-db"               \
+                --db-host="m2devbox-{$this->getShortVersion()}-db"                  \
                 --db-name="magento2_{$this->getShortVersion()}"                     \
                 --db-user="magento2"                                                \
                 --db-password="magento2"                                            \
@@ -92,7 +92,7 @@ class Mage24 extends AbstractRecipe
                 --base-url-secure="https://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/" \
                 --use-secure-admin=0                                                \
                 --session-save=files                                                \
-                --elasticsearch-host="mage2devbox-{$this->getShortVersion()}-elastic" \
+                --elasticsearch-host="m2devbox-{$this->getShortVersion()}-elastic"  \
                 --elasticsearch-port="$(M2D_ES_PORT)"                               \
             && composer require markshust/magento2-module-disabletwofactorauth      \
             && bin/magento module:enable MarkShust_DisableTwoFactorAuth             \

@@ -2,10 +2,10 @@ services:
   db:
     environment:
       MYSQL_DATABASE: "magento2_${_M2D_MAGE_SHORT_VERSION}"
-    container_name: "mage2devbox-${_M2D_MAGE_SHORT_VERSION}-db"
+    container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-db"
 
   web:
-    container_name: "mage2devbox-${_M2D_MAGE_SHORT_VERSION}-web"
+    container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-web"
     depends_on:
       - db
     build:

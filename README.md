@@ -6,4 +6,4 @@
 * php-zlib
 
 Demo:
-![mage2devbox temrinal demo animation](./docs/demo.svg)
+![m2devbox terminal demo animation](./docs/demo.svg)

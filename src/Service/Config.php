@@ -99,7 +99,7 @@ class Config
     }
 
     /**
-     * Get the system cache directory (i.e. ~/.cache/mage2devbox).
+     * Get the system cache directory (i.e. ~/.cache/m2devbox).
      *
      * @return string   Cache directory (without trailing slash)
      * @throws Exception
@@ -112,7 +112,7 @@ class Config
             $cacheDir = $homeDir.'/.cache';
         }
 
-        $cacheDir = $cacheDir.'/mage2devbox';
+        $cacheDir = $cacheDir.'/m2devbox';
 
         if (!is_dir($cacheDir)) {
             mkdir($cacheDir, 0777, true);
@@ -122,7 +122,7 @@ class Config
     }
 
     /**
-     * Get the system config directory (i.e. ~/.config/mage2devbox).
+     * Get the system config directory (i.e. ~/.config/m2devbox).
      *
      * @return string   Config directory (without trailing slash)
      * @throws Exception
@@ -135,7 +135,7 @@ class Config
             $configDir = $homeDir.'/.config';
         }
 
-        $configDir = $configDir.'/mage2devbox';
+        $configDir = $configDir.'/m2devbox';
 
         if (!is_dir($configDir)) {
             mkdir($configDir, 0777, true);
@@ -145,7 +145,7 @@ class Config
     }
 
     /**
-     * Get the Docker config directory (i.e. ~/.config/mage2devbox/docker).
+     * Get the Docker config directory (i.e. ~/.config/m2devbox/docker).
      *
      * @return string   Docker config directory (without trailing slash)
      * @throws Exception

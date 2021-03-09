@@ -1,7 +1,7 @@
 <?php
 
 /**
- * mage2devbox Configuration file
+ * m2devbox Configuration file
  */
 
 return [
@@ -36,7 +36,7 @@ return [
         ],
     ],
     'default_env'        => [
-        'M2D_DC_PROJECT_NAME' => 'mage2devbox',
+        'M2D_DC_PROJECT_NAME' => 'm2devbox',
         'M2D_WEB_PORT'        => 8080,
         'M2D_DB_PORT'         => 33306,
         'M2D_ES_PORT'         => 9200,

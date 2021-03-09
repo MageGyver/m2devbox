@@ -81,7 +81,7 @@ abstract class AbstractRecipe implements RecipeInterface
     public function isBuilt(): bool
     {
         $this->exec(
-            ['docker', 'ps', '-a', '-f', 'name=mage2devbox', '--format', '{{.Names}}'],
+            ['docker', 'ps', '-a', '-f', 'name=m2devbox', '--format', '{{.Names}}'],
             [],
             $output,
             false
@@ -523,7 +523,7 @@ abstract class AbstractRecipe implements RecipeInterface
      * @return string
      */
     protected function getHealthiness(string $serviceName): string {
-        $p = new Process(['docker', 'inspect', '--format', '"{{.State.Health.Status}}"', 'mage2devbox-'.$this->getShortVersion().'-'.$serviceName]);
+        $p = new Process(['docker', 'inspect', '--format', '"{{.State.Health.Status}}"', 'm2devbox-'.$this->getShortVersion().'-'.$serviceName]);
         $p
             ->setTty(false)
             ->setTimeout(10)

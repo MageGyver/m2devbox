@@ -10,8 +10,8 @@ class Mage23 extends AbstractRecipe
     protected function getExpectedContainers(): array
     {
         return [
-            "mage2devbox-{$this->getShortVersion()}-db",
-            "mage2devbox-{$this->getShortVersion()}-web",
+            "m2devbox-{$this->getShortVersion()}-db",
+            "m2devbox-{$this->getShortVersion()}-web",
         ];
     }
 
@@ -79,7 +79,7 @@ class Mage23 extends AbstractRecipe
                 --admin-password="$(M2D_MAGE_ADMIN_PASS)"                           \
                 --base-url="http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/"         \
                 --backend-frontname=admin                                           \
-                --db-host="mage2devbox-{$this->getShortVersion()}-db"               \
+                --db-host="m2devbox-{$this->getShortVersion()}-db"                  \
                 --db-name="magento2_{$this->getShortVersion()}"                     \
                 --db-user="magento2"                                                \
                 --db-password="magento2"                                            \

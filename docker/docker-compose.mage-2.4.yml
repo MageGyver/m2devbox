@@ -2,12 +2,12 @@ services:
   db:
     environment:
       MYSQL_DATABASE: "magento2_${_M2D_MAGE_SHORT_VERSION}"
-    container_name: "mage2devbox-${_M2D_MAGE_SHORT_VERSION}-db"
+    container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-db"
     networks:
       - elastic
 
   web:
-    container_name: "mage2devbox-${_M2D_MAGE_SHORT_VERSION}-web"
+    container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-web"
     build:
       context: ./php/${_M2D_DOCKER_PHP_IMG_VERSION}
     depends_on:
@@ -20,7 +20,7 @@ services:
       - elastic
 
   elastic:
-    container_name: "mage2devbox-${_M2D_MAGE_SHORT_VERSION}-elastic"
+    container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-elastic"
     build:
       context: ./elastic
     environment:
