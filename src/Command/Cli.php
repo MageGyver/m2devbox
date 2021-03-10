@@ -40,6 +40,11 @@ class Cli extends Command
 
         try {
             $recipe = RecipeLoader::getRunning($io);
+
+            if (!$recipe || empty($recipe)) {
+                throw new \Exception('No instance is currently running! Please start one first.');
+            }
+
             $recipeVersion = array_key_first($recipe);
 
             $recipe[$recipeVersion]->dockerCompose(
