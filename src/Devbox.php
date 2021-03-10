@@ -124,7 +124,8 @@ class Devbox extends Application
      */
     protected function exportDockerConfig()
     {
-        $localDockerConfigAssetsDir = 'docker/';
+        /** @psalm-suppress UndefinedConstant */
+        $localDockerConfigAssetsDir = DB_ROOT.'/docker/';
         $dockerConfigDir = Config::getDockerConfigDir();
 
         $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($localDockerConfigAssetsDir));
