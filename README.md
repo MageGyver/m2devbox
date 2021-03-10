@@ -14,6 +14,32 @@ m2devbox can make use of the newer [BuildKit](https://www.docker.com/blog/advanc
 Docker backend that results in a faster build process with smaller Docker images.
 m2devbox automatically uses BuildKit if it finds a Docker Engine 18.09 or above.
 
+## Installation
+
+m2devbox is distributed in form of a PHAR file. You can use it locally in your project,
+or you can install it globally.
+
+### Global installation (recommended)
+```shell
+wget https://github.com/MageGyver/m2devbox/releases/download/0.2/m2devbox.phar
+chmod u+x m2devbox.phar
+mv m2devbox.phar /usr/local/bin/m2devbox
+m2devbox status
+```
+
+Download the release `m2devbox.phar` to your local machine and move it to some 
+directory that is accessible via `$PATH`. For moving, you might need superuser 
+privileges (`sudo mv m2devbox.phar /usr/local/bin/m2devbox`).  
+Now you can run `m2devbox` anywhere.
+
+### Local installation
+```shell
+wget https://github.com/MageGyver/m2devbox/releases/download/0.2/m2devbox.phar
+php m2devbox.phar status
+```
+
+Download the release `m2devbox.phar` to your local machine and use it right away.
+
 ## Usage
 
 ### Check currently running instances
