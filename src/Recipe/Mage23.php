@@ -23,12 +23,6 @@ class Mage23 extends AbstractRecipe
         ];
     }
 
-    protected function dockerBuild()
-    {
-        $this->status('<info>🐋 Building Docker containers...</info>');
-        $this->dockerCompose('build');
-    }
-
     protected function composerCreateProject()
     {
         if ($this->mageFileExists('composer.json')) {

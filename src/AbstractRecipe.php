@@ -26,6 +26,8 @@ abstract class AbstractRecipe implements RecipeInterface
     protected ?SymfonyStyle $io;
     protected Filesystem $filesystem;
 
+    protected ?bool $_dockerSupportsBuildKit = null;
+
     public function __construct(?SymfonyStyle $io = null)
     {
         $this->io = $io;
@@ -157,6 +159,52 @@ abstract class AbstractRecipe implements RecipeInterface
                 '$(M2D_MAGE_ADMIN_USER), password: $(M2D_MAGE_ADMIN_PASS))</info>'
             )
         );
+    }
+
+    /**
+     * Check, whether the local Docker system supports BuildKit.
+     *
+     * @return bool
+     */
+    protected function dockerSupportsBuildKit(): bool
+    {
+        if ($this->_dockerSupportsBuildKit === null) {
+            try {
+                $dockerVersionExitCode = $this->exec(
+                    ['docker', 'version', '--format', '{{.Server.Version}}'],
+                    [],
+                    $dockerVersion,
+                    false,
+                    false
+                );
+
+                if ($dockerVersionExitCode !== 0) {
+                    $this->_dockerSupportsBuildKit = false;
+                } else {
+                    if (version_compare($dockerVersion, '18.09', '>=')) {
+                        $this->_dockerSupportsBuildKit = true;
+                    } else {
+                        $this->_dockerSupportsBuildKit = false;
+                    }
+                }
+            } catch (Exception $e) {
+                $this->_dockerSupportsBuildKit = false;
+            }
+        }
+
+        return $this->_dockerSupportsBuildKit;
+    }
+
+    protected function dockerBuild()
+    {
+        $buildkit = $this->dockerSupportsBuildKit();
+
+        $env = $buildkit
+            ? ['DOCKER_BUILDKIT' => '1']
+            : [];
+
+        $this->status('<info>🐋 Building Docker containers...</info> %s', [$buildkit ? '(accelerated by BuildKit)' : '']);
+        $this->dockerCompose('build', $output, true, false, $env);
     }
 
     abstract protected function installMagento();
@@ -322,10 +370,11 @@ abstract class AbstractRecipe implements RecipeInterface
      * @param string|null  $output (Optional) Command output
      * @param bool         $showOutputInSpinner
      * @param bool         $allocateTty
+     * @param array        $env ENV variables for the process
      * @return int|null
      * @throws Exception
      */
-    public function dockerCompose($commands, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
+    public function dockerCompose($commands, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false, array $env = []): ?int
     {
         // shell command to execute
         $commandLine = ['docker-compose'];
@@ -343,7 +392,8 @@ abstract class AbstractRecipe implements RecipeInterface
         array_push($commandLine, ...$commands);
 
         // set env vars for Docker Compose yml
-        $env = [
+        $_env = array_merge(Config::get('default_env'), $env);
+        $_env = array_merge($_env, [
             '_M2D_DOCKER_PHP_IMG_VERSION' => $this->config['php_img_version'],
             '_M2D_MAGE_SHORT_VERSION'     => $this->getShortVersion(),
             '_M2D_DB_DIR'                 => $this->getDbDir(),
@@ -351,11 +401,10 @@ abstract class AbstractRecipe implements RecipeInterface
             '_M2D_APP_CODE_DIR'           => $this->getAppCodeDir(),
             '_M2D_COMPOSER_CACHE_DIR'     => Config::getComposerHome(),
             '_M2D_COMPOSER_AUTH_FILE'     => Config::getComposerAuth(),
-        ];
-        $env = array_merge($env, Config::get('default_env'));
+        ]);
 
         // execute command line
-        return $this->exec($commandLine, $env, $output, $showOutputInSpinner, $allocateTty);
+        return $this->exec($commandLine, $_env, $output, $showOutputInSpinner, $allocateTty);
     }
 
     /**
