@@ -39,10 +39,9 @@ class Start extends Command
 
         try {
             $version = $input->getArgument('version');
-
             $running = RecipeLoader::getRunning($io);
 
-            // remove current version element from array
+            // remove version to be started from $running array
             $remainingRunning = array_filter(
                 $running,
                 function($key) use ($version) {
@@ -51,6 +50,7 @@ class Start extends Command
                 ARRAY_FILTER_USE_KEY
             );
 
+            // stop all the remaining running instances
             foreach ($remainingRunning as $recipe) {
                 $recipe->stop();
             }

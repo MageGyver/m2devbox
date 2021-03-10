@@ -30,7 +30,7 @@ class Compose extends Command
         $this
             ->setDescription('Run a Docker Compose command.')
             ->setHelp(
-                "This command runs the given Docker Compose command. Pro tip: Supply Docker Compose commands after a double dash to avoid ambiguous commands!\nExample:\n\n".
+                "This command runs the given Docker Compose command. Pro tip: Supply Docker Compose commands after a double dash to avoid ambiguous arguments!\nExample:\n\n".
                 "    <info>".$_SERVER['PHP_SELF'] . " compose 2.4.1 -- ps -a</info>\n"
             )
             ->addOption('tty', 't', InputOption::VALUE_NONE, 'Allocate a tty')
