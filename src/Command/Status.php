@@ -36,7 +36,7 @@ class Status extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->writeln('<fg=#f46f25>m2devbox status overview:</>');
+        $io->writeln('<fg=#f46f25>ℹ️  m2devbox status overview:</>');
         $io->newLine();
 
         $true = '<fg=green>True</>';

@@ -125,10 +125,12 @@ abstract class AbstractRecipe implements RecipeInterface
      */
     public function start(): void
     {
+        $this->status('<info>▶️  Starting Magento %s...</info>', [$this->getVersion()]);
+
         if ($this->isRunning()) {
             $this->status(
                 Devbox::extrapolateEnv(
-                    '<info>Magento '.$this->getVersion().' is already up & running at '.
+                    '<info>✅ Magento '.$this->getVersion().' is already up & running at '.
                     'http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/admin (User: '.
                     '$(M2D_MAGE_ADMIN_USER), password: $(M2D_MAGE_ADMIN_PASS))</info>'
                 )
@@ -136,9 +138,12 @@ abstract class AbstractRecipe implements RecipeInterface
             return;
         }
 
+        if (!$this->isBuilt()) {
+            $this->status('<info>☕ Building Magento %s.</info> <comment>(This should take around 5 minutes on a modern system.)</comment>', [$this->getVersion()]);
+        }
+
         $this->installMagento();
 
-        $this->status('<info>Starting Magento %s...</info>', [$this->getVersion()]);
         $this->inDocker(
             'web',
             'chown -R www-data:www-data /var/www/html/'
@@ -147,7 +152,7 @@ abstract class AbstractRecipe implements RecipeInterface
 
         $this->status(
             Devbox::extrapolateEnv(
-                '<info>Magento '.$this->getVersion().' is now up & running at '.
+                '<info>✅ Magento '.$this->getVersion().' is now up & running at '.
                 'http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/admin (User: '.
                 '$(M2D_MAGE_ADMIN_USER), password: $(M2D_MAGE_ADMIN_PASS))</info>'
             )
@@ -159,15 +164,15 @@ abstract class AbstractRecipe implements RecipeInterface
     public function stop(): void
     {
         if (!$this->isRunning()) {
-            $this->status('<info>Magento %s is already stopped.</info>', [$this->getVersion()]);
+            $this->status('<info>⏹️  Magento %s is already stopped.</info>', [$this->getVersion()]);
             return;
         }
 
-        $this->status('<info>Stopping Magento %s...</info>', [$this->getVersion()]);
+        $this->status('<info>⏹️  Stopping Magento %s...</info>', [$this->getVersion()]);
         $this->dockerComposeStop();
 
         $this->status(
-            '<info>Magento '.$this->getVersion().' is now stopped.</info>'
+            '<info>✅ Magento '.$this->getVersion().' is now stopped.</info>'
         );
     }
 
@@ -200,7 +205,7 @@ abstract class AbstractRecipe implements RecipeInterface
             }
         }
 
-        $this->status('<info>Clearing Magento %s...</info>', [$this->getVersion()]);
+        $this->status('<info>🗑️ Clearing Magento %s...</info>', [$this->getVersion()]);
         $this->stop();
 
         foreach ($dirs as $dir) {
@@ -219,6 +224,8 @@ abstract class AbstractRecipe implements RecipeInterface
                 $this->status('<info>'.$e->getMessage().'</info>');
             }
         }
+
+        $this->status('<info>✅ Magento %s was successfully cleared.</info>', [$this->getVersion()]);
     }
 
     protected function getState(string $key)

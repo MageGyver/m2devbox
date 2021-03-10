@@ -25,18 +25,18 @@ class Mage23 extends AbstractRecipe
 
     protected function dockerBuild()
     {
-        $this->status('<info>Building Docker containers...</info>');
+        $this->status('<info>🐋 Building Docker containers...</info>');
         $this->dockerCompose('build');
     }
 
     protected function composerCreateProject()
     {
         if ($this->mageFileExists('composer.json')) {
-            $this->status('<info>Composer project already created</info>');
+            $this->status('<info>🤵 Composer project already created</info>');
             return;
         }
 
-        $this->status('<info>Composer create-project...</info> <comment>(this might take several minutes)</comment>');
+        $this->status('<info>🤵 Composer create-project...</info>');
         $this->createMageSrcDir();
         $this->inDocker(
             'web',
@@ -56,11 +56,11 @@ class Mage23 extends AbstractRecipe
         $this->composerCreateProject();
 
         if ($this->mageDirExists('vendor') && $this->mageFileExists('app/etc/vendor_path.php')) {
-            $this->status('<info>Composer dependencies already installed</info>');
+            $this->status('<info>🤵 Composer dependencies already installed</info>');
             return;
         }
 
-        $this->status('<info>Composer install...</info> <comment>(this might take several minutes)</comment>');
+        $this->status('<info>🤵 Composer install...</info>');
         $this->inDocker(
             'web',
             'composer install --prefer-dist --no-interaction'
@@ -72,11 +72,11 @@ class Mage23 extends AbstractRecipe
         $this->composerInstall();
 
         if ($this->mageFileExists('app/etc/env.php')) {
-            $this->status('<info>Magento already installed</info>');
+            $this->status('<info>🛒 Magento already installed</info>');
             return;
         }
 
-        $this->status('<info>Installing Magento %s...</info>', [$this->getVersion()]);
+        $this->status('<info>🛒 Installing Magento %s...</info>', [$this->getVersion()]);
 
         $installCommand = <<<COMMAND
             /var/www/html/bin/magento setup:install                                 \
