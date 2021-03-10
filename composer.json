@@ -12,7 +12,7 @@
         "symfony/console": "^5.2",
         "vlucas/phpdotenv": "^5.2",
         "symfony/process": "^5.2",
-        "alecrabbit/php-cli-snake": "^0.6",
+        "alecrabbit/php-cli-snake": "dev-feature/status-messages#3b70a51280aae1be7d975cc0a563f76d03133623",
         "symfony/filesystem": "^5.2"
     },
     "require-dev": {

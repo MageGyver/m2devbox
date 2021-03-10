@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b9d8bbb6eb039276a52096658f316249",
+    "content-hash": "fa3322ff0c13391f1bb0151b9b7837bf",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
-            "version": "0.6.3",
+            "version": "dev-feature/status-messages",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aeno/php-cli-snake.git",
-                "reference": "8e21b31900b134827ddee22fd4d578ed2155b40d"
+                "reference": "3b70a51280aae1be7d975cc0a563f76d03133623"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aeno/php-cli-snake/zipball/8e21b31900b134827ddee22fd4d578ed2155b40d",
-                "reference": "8e21b31900b134827ddee22fd4d578ed2155b40d",
+                "url": "https://api.github.com/repos/aeno/php-cli-snake/zipball/3b70a51280aae1be7d975cc0a563f76d03133623",
+                "reference": "3b70a51280aae1be7d975cc0a563f76d03133623",
                 "shasum": ""
             },
             "require": {
@@ -58,7 +58,7 @@
                 "spinner"
             ],
             "support": {
-                "source": "https://github.com/aeno/php-cli-snake/tree/0.6.3"
+                "source": "https://github.com/aeno/php-cli-snake/tree/feature/status-messages"
             },
             "funding": [
                 {
@@ -66,7 +66,7 @@
                     "url": "https://www.patreon.com/alecrabbit"
                 }
             ],
-            "time": "2021-01-25T19:59:52+00:00"
+            "time": "2021-03-10T19:51:38+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -253,16 +253,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.2.4",
+            "version": "v5.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "d6d0cc30d8c0fda4e7b213c20509b0159a8f4556"
+                "reference": "938ebbadae1b0a9c9d1ec313f87f9708609f1b79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/d6d0cc30d8c0fda4e7b213c20509b0159a8f4556",
-                "reference": "d6d0cc30d8c0fda4e7b213c20509b0159a8f4556",
+                "url": "https://api.github.com/repos/symfony/console/zipball/938ebbadae1b0a9c9d1ec313f87f9708609f1b79",
+                "reference": "938ebbadae1b0a9c9d1ec313f87f9708609f1b79",
                 "shasum": ""
             },
             "require": {
@@ -330,7 +330,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.2.4"
+                "source": "https://github.com/symfony/console/tree/v5.2.5"
             },
             "funding": [
                 {
@@ -346,7 +346,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-02-23T10:08:49+00:00"
+            "time": "2021-03-06T13:42:15+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -4036,7 +4036,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "alecrabbit/php-cli-snake": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
