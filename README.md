@@ -1,8 +1,14 @@
-# m2devbox
+<h1 align="center">m2devbox</h1>
 
-The goal of m2devbox is to accelerate setting up development environment for Magento 2.
+<div align="center">
+    <img src="https://img.shields.io/badge/Magento-2.x-orange?logo=magento" alt="Magento 2.x" />
+    <img src="https://img.shields.io/badge/Docker-17.05+-blue?logo=docker" alt="Docker 17.05+" />
+    <img src="https://img.shields.io/badge/License-MPL--2.0-brightgreen" alt="License: MPL-2.0" />
+</div>
+
+The goal of m2devbox is to accelerate setting up development environments for Magento 2.  
 If you are developing a Magento 2 module and want to quickly test it in multiple release
-versions of Magento, you can simply start your preferred Magento 2 release and your
+versions of Magento, you can simply start your preferred Magento 2 release, and your
 module(s) will be automatically available inside it!
 
 ![m2devbox terminal demo animation](./docs/demo.gif)
@@ -99,4 +105,8 @@ Magento CLI commands like `bin/magento cache:clean`.
 | Argument     | Optional?  | Description  | Default value |
 |--------------|------------|--------------|---------------|
 | `container`  | _optional_ | Container name to run the command in. Allowed values: `web` &#124;&#124; `db` &#124;&#124; `elastic` | `web` |
-| `command`  | _optional_ | Command to run in the container. | `bash` |
+| `command`    | _optional_ | Command to run in the container. | `bash` |
+
+## License
+
+m2devbox is licensed under the [Mozilla Public License, v. 2.0](https://mozilla.org/MPL/2.0/).
