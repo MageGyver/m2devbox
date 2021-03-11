@@ -5,6 +5,8 @@ If you are developing a Magento 2 module and want to quickly test it in multiple
 versions of Magento, you can simply start your preferred Magento 2 release and your
 module(s) will be automatically available inside it!
 
+![m2devbox terminal demo animation](./docs/demo.gif)
+
 ## Requirements
 * Docker 17.05+
 * PHP ^7.4||^8.0 
@@ -98,8 +100,3 @@ Magento CLI commands like `bin/magento cache:clean`.
 |--------------|------------|--------------|---------------|
 | `container`  | _optional_ | Container name to run the command in. Allowed values: `web` &#124;&#124; `db` &#124;&#124; `elastic` | `web` |
 | `command`  | _optional_ | Command to run in the container. | `bash` |
-
-
-
-Demo:
-![m2devbox terminal demo animation](./docs/demo.svg)
