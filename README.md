@@ -50,7 +50,45 @@ Download the release `m2devbox.phar` to your local machine and use it right away
 
 ## Usage
 
-### Check currently running instances
+With m2devbox, you can quickly spin up a Magento 2 instance and start developing
+and testing Magento 2 extensions inside it.
+
+### Workflow
+
+1. Navigate to a project directory somewhere on your machine.
+1. Create a `app_code/` directory. This directory will be mounted into the 
+   `app/code/` directory of your Magento 2 instance and holds all your module
+   source code.
+2. **_(optional)_** Create a `.env` file in the root of your project directory to 
+   [customize m2devbox settings](#custom-settings) for your project.
+3. Start an instance with your desired Magento 2 version: `m2devbox start 2.4.2`
+4. Add `127.0.0.1    m2.docker` to your `/etc/hosts` file, to be able to access your site.
+5. Navigate to http://m2.docker:8080 and see your modules in action!
+
+### Custom settings
+
+You can customize some aspects of m2devbox by defining variables in a `.env` file.
+Create a plain-text file called `.env` in your project folder and put each variable 
+you want to use in a new line. Assign a value to each variable, separating the 
+variable and value with an `=`.
+
+| Variable            | Default value  | Description                     |
+|---------------------|----------------|---------------------------------|
+| M2D_DC_PROJECT_NAME | m2devbox       | Docker compose project name.
+| M2D_WEB_PORT        | 8080           | Web port used to access the site from your host 
+| M2D_DB_PORT         | 33306          | MySQL port used to access the database from your host
+| M2D_ES_PORT         | 9200           | Elasticsearch port used to access ES from your host
+| M2D_ES_CONTROL_PORT | 9300           | Elasticsearch control port used to access ES from your host
+| M2D_TIMEZONE        | Europe/Berlin  | Timezone to use in Magento 2
+| M2D_MAGE_WEB_DOMAIN | m2.docker      | Web domain used to access the site from your host
+| M2D_MAGE_ADMIN_USER | admin          | Magento 2 admin user name
+| M2D_MAGE_ADMIN_PASS | Admin123!      | Magento 2 admin user password
+| M2D_MAGE_LANG       | en_US          | Magento 2 backend language for the admin account
+| M2D_MAGE_CURRENCY   | EUR            | Default Magento 2 currency
+
+### CLI Commands
+
+#### Check currently running instances
 ```shell
 m2devbox [status]
 ```
@@ -58,7 +96,7 @@ m2devbox [status]
 Running `m2devbox` without arguments or with the `status`argument displays what 
 instances are currently running.
 
-### Start an instance
+#### Start an instance
 ```shell
 m2devbox start <version>
 ```
@@ -73,14 +111,14 @@ simply look at the progress indicator while m2devbox sets up everything for you.
 If an instance of this version is already started, it will be stopped and restarted
 again.
 
-### Stop the currently running instance
+#### Stop the currently running instance
 ```shell
 m2devbox stop
 ```
 
 This command stops the currently running Magento 2 instance.
 
-### Clear an instance
+#### Clear an instance
 ```shell
 m2devbox clear [<versions>]
 ```
@@ -92,7 +130,7 @@ files and database.
 |--------------|------------|-------------|
 | `versions`   | _optional_ | Space-separated list of versions to be cleared or blank to clear all versions. |
 
-### Running CLI commands inside an instance
+#### Running CLI commands inside an instance
 ```shell
 m2devbox cli [<container>] [<command>]
 ```
