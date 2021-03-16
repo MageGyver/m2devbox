@@ -14,10 +14,38 @@
 
 return [
     'supported_versions' => [
+        '2.3.4' => [
+            'recipe_class'    => 'Mage23',
+            'long_version'    => '2.3.4',
+            'short_version'   => '234',
+            'php_img_version' => '7.3',
+            'compose_files'   => ['docker-compose.mage-2.3.yml'],
+        ],
+        '2.3.4-p2' => [
+            'recipe_class'    => 'Mage23',
+            'long_version'    => '2.3.4-p2',
+            'short_version'   => '234p2',
+            'php_img_version' => '7.3',
+            'compose_files'   => ['docker-compose.mage-2.3.yml'],
+        ],
         '2.3.5' => [
             'recipe_class'    => 'Mage23',
             'long_version'    => '2.3.5',
             'short_version'   => '235',
+            'php_img_version' => '7.3',
+            'compose_files'   => ['docker-compose.mage-2.3.yml'],
+        ],
+        '2.3.5-p1' => [
+            'recipe_class'    => 'Mage23',
+            'long_version'    => '2.3.5-p1',
+            'short_version'   => '235p1',
+            'php_img_version' => '7.3',
+            'compose_files'   => ['docker-compose.mage-2.3.yml'],
+        ],
+        '2.3.5-p2' => [
+            'recipe_class'    => 'Mage23',
+            'long_version'    => '2.3.5-p2',
+            'short_version'   => '235p2',
             'php_img_version' => '7.3',
             'compose_files'   => ['docker-compose.mage-2.3.yml'],
         ],
@@ -28,10 +56,38 @@ return [
             'php_img_version' => '7.3',
             'compose_files'   => ['docker-compose.mage-2.3.yml'],
         ],
+        '2.3.6-1' => [
+            'recipe_class'    => 'Mage23',
+            'long_version'    => '2.3.6-1',
+            'short_version'   => '236p1',
+            'php_img_version' => '7.3',
+            'compose_files'   => ['docker-compose.mage-2.3.yml'],
+        ],
+        '2.4.0' => [
+            'recipe_class'    => 'Mage24',
+            'long_version'    => '2.4.0',
+            'short_version'   => '240',
+            'php_img_version' => '7.4',
+            'compose_files'   => ['docker-compose.mage-2.4.yml'],
+        ],
+        '2.4.0-p1' => [
+            'recipe_class'    => 'Mage24',
+            'long_version'    => '2.4.0-p1',
+            'short_version'   => '240p1',
+            'php_img_version' => '7.4',
+            'compose_files'   => ['docker-compose.mage-2.4.yml'],
+        ],
         '2.4.1' => [
             'recipe_class'    => 'Mage24',
             'long_version'    => '2.4.1',
             'short_version'   => '241',
+            'php_img_version' => '7.4',
+            'compose_files'   => ['docker-compose.mage-2.4.yml'],
+        ],
+        '2.4.1-p1' => [
+            'recipe_class'    => 'Mage24',
+            'long_version'    => '2.4.1-p1',
+            'short_version'   => '241p1',
             'php_img_version' => '7.4',
             'compose_files'   => ['docker-compose.mage-2.4.yml'],
         ],

@@ -1,9 +1,10 @@
 <h1 align="center">m2devbox</h1>
 
 <div align="center">
-    <img src="https://img.shields.io/badge/Magento-2.x-orange?logo=magento" alt="Magento 2.x" />
-    <img src="https://img.shields.io/badge/Docker-17.05+-blue?logo=docker" alt="Docker 17.05+" />
-    <img src="https://img.shields.io/badge/License-MPL--2.0-brightgreen" alt="License: MPL-2.0" />
+   <img alt="Latest release" src="https://img.shields.io/github/v/release/MageGyver/m2devbox">
+   <img src="https://img.shields.io/badge/Magento-2.x-orange?logo=magento" alt="Magento 2.x" />
+   <img src="https://img.shields.io/badge/Docker-17.05+-blue?logo=docker" alt="Docker 17.05+" />
+   <img src="https://img.shields.io/badge/License-MPL--2.0-brightgreen" alt="License: MPL-2.0" />
 </div>
 
 The goal of m2devbox is to accelerate setting up development environments for Magento 2.  
@@ -144,6 +145,20 @@ Magento CLI commands like `bin/magento cache:clean`.
 |--------------|------------|--------------|---------------|
 | `container`  | _optional_ | Container name to run the command in. Allowed values: `web` &#124;&#124; `db` &#124;&#124; `elastic` | `web` |
 | `command`    | _optional_ | Command to run in the container. | `bash` |
+
+## Supported Magento versions
+* 2.3.4
+* 2.3.4-p2
+* 2.3.5
+* 2.3.5-p1
+* 2.3.5-p2
+* 2.3.6
+* 2.3.6-1
+* 2.4.0
+* 2.4.0-p1
+* 2.4.1
+* 2.4.1-p1
+* 2.4.2
 
 ## License
 
