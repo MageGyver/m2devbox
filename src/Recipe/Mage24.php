@@ -12,6 +12,7 @@ namespace Devbox\Recipe;
 
 use Devbox\AbstractRecipe;
 use Devbox\Devbox;
+use Devbox\Util\Env;
 
 class Mage24 extends AbstractRecipe
 {
@@ -102,7 +103,7 @@ class Mage24 extends AbstractRecipe
             && bin/magento config:set twofactorauth/general/enable 0                \
             && chown -R www-data:www-data /var/www/html/
 COMMAND;
-        $installCommand = Devbox::extrapolateEnv($installCommand);
+        $installCommand = Env::extrapolateEnv($installCommand);
 
         $this->inDocker(
             'web',

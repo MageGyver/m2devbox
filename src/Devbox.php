@@ -11,10 +11,19 @@
 namespace Devbox;
 
 use Devbox\Service\Config;
+use Devbox\Util\CommandLoader;
+use Exception;
 use Symfony\Component\Console\Application;
 
 class Devbox extends Application
 {
+    /**
+     * Devbox constructor.
+     *
+     * @param string $name
+     * @param string $version
+     * @throws Exception
+     */
     public function __construct(string $name = 'UNKNOWN', string $version = 'UNKNOWN')
     {
         parent::__construct($name, $version);
@@ -24,8 +33,8 @@ class Devbox extends Application
             echo "\033[?25h";
         });
 
-        $commands = $this->findCommands();
-        $this->_addCommands($commands);
+        $commands = CommandLoader::findCommands();
+        CommandLoader::addCommandsToApplication($this, $commands);
 
         if (in_array('Status', $commands)) {
             $this->setDefaultCommand('status');
@@ -57,70 +66,11 @@ class Devbox extends Application
     }
 
     /**
-     * Find command class files.
-     *
-     * @return string[] Array of class names
-     */
-    protected function findCommands(): array
-    {
-        $commands = [];
-
-        /** @psalm-suppress UndefinedConstant */
-        $files = array_diff(scandir(DB_SRC.'/Command'), ['.', '..']);
-        foreach ($files as $file) {
-            $pi = pathinfo($file);
-
-            if ($pi['extension'] === 'php') {
-                $commands[] = $pi['filename'];
-            }
-        }
-
-        return $commands;
-    }
-
-    /**
-     * Add commands to Console Application.
-     *
-     * @param string[]  $commands   Array of command class names
-     */
-    protected function _addCommands(array $commands): void
-    {
-        foreach (array_values($commands) as $commandName) {
-            $commandFQN = '\\Devbox\\Command\\'.$commandName;
-            $command = new $commandFQN();
-
-            $this->add($command);
-        }
-    }
-
-    /**
-     * Extrapolate env variables in a string.
-     *
-     * @param string $string
-     * @return string
-     */
-    public static function extrapolateEnv(string $string): string
-    {
-        if (preg_match('/\$\(.*\)/mU', $string) === 1) {
-            $replacements = [];
-
-            // @todo #security: naïvely walk $_ENV or instead walk a white-listed subset of it?
-            array_walk($_ENV, function ($v, $k) use (&$replacements) {
-                $replacements['$('.$k.')'] = $v;
-            });
-
-            $string = strtr($string, $replacements);
-        }
-
-        return $string;
-    }
-
-    /**
      * Copy Docker config files from PHAR to global config dir.
      * This is needed, because external programs like Docker can't access files
      * stored in a PHAR.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function exportDockerConfig()
     {

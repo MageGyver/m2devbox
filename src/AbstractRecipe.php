@@ -13,6 +13,7 @@ namespace Devbox;
 use AlecRabbit\Snake\Spinner;
 use Devbox\Service\Config;
 use Devbox\Service\State;
+use Devbox\Util\Env;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -131,7 +132,7 @@ abstract class AbstractRecipe implements RecipeInterface
 
         if ($this->isRunning()) {
             $this->status(
-                Devbox::extrapolateEnv(
+                Env::extrapolateEnv(
                     '<info>✅ Magento '.$this->getVersion().' is already up & running at '.
                     'http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/admin (User: '.
                     '$(M2D_MAGE_ADMIN_USER), password: $(M2D_MAGE_ADMIN_PASS))</info>'
@@ -153,7 +154,7 @@ abstract class AbstractRecipe implements RecipeInterface
         $this->dockerComposeUp(true);
 
         $this->status(
-            Devbox::extrapolateEnv(
+            Env::extrapolateEnv(
                 '<info>✅ Magento '.$this->getVersion().' is now up & running at '.
                 'http://$(M2D_MAGE_WEB_DOMAIN):$(M2D_WEB_PORT)/admin (User: '.
                 '$(M2D_MAGE_ADMIN_USER), password: $(M2D_MAGE_ADMIN_PASS))</info>'
@@ -481,8 +482,7 @@ abstract class AbstractRecipe implements RecipeInterface
             }
         }
 
-        /** @psalm-suppress UndefinedConstant */
-        return CWD.'/app_code/';
+        return getcwd().'/app_code/';
     }
 
     /**

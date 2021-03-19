@@ -12,6 +12,7 @@ namespace Devbox\Recipe;
 
 use Devbox\AbstractRecipe;
 use Devbox\Devbox;
+use Devbox\Util\Env;
 
 class Mage23 extends AbstractRecipe
 {
@@ -95,7 +96,7 @@ class Mage23 extends AbstractRecipe
                 --session-save=files                                                \
             && chown -R www-data:www-data /var/www/html/
 COMMAND;
-        $installCommand = Devbox::extrapolateEnv($installCommand);
+        $installCommand = Env::extrapolateEnv($installCommand);
 
         $this->inDocker(
             'web',
