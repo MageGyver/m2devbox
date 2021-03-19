@@ -10,34 +10,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-use Devbox\Devbox;
-use Devbox\Service\Config;
-use Dotenv\Dotenv;
+namespace Devbox;
 
-$cwd = getcwd();
-
-define('CWD', $cwd);
-define('DB_ROOT', __DIR__);
-
-require DB_ROOT.'/vendor/autoload.php';
-
-define('DB_SRC', __DIR__.'/src');
-define('DB_VERSION', '@git_tag@');
-
-// load default ENV vars form config
-$defaultEnv = Config::get('default_env');
-foreach ($defaultEnv as $key => $value) {
-    if (!empty($value) && !array_key_exists($key, $_ENV)) {
-        $_ENV[$key] = $value;
-        putenv($key.'='.$value);
-    }
-}
-
-// load custom ENV vars from $CWD/.env
-if (file_exists(CWD.'/.env')) {
-    $dotenv = Dotenv::createMutable(CWD);
-    $dotenv->load();
-}
+require_once(__DIR__.'/src/bootstrap.php');
 
 // init and run application
 $devbox = new Devbox('Mage2 Devbox', DB_VERSION);
