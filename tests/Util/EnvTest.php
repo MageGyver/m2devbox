@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the m2devbox project.
  * (c) Steffen Rieke <m2devbox@aenogym.de>
@@ -8,10 +8,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-use Devbox\Devbox;
+namespace Util;
+
+use Devbox\Util\Env;
 use PHPUnit\Framework\TestCase;
 
-class DevboxTest extends TestCase
+/**
+ * @covers \Devbox\Util\Env
+ */
+class EnvTest extends TestCase
 {
 
     public function testExtrapolateEnv()
@@ -27,7 +32,7 @@ class DevboxTest extends TestCase
 
         self::assertEquals(
             $expected,
-            Devbox::extrapolateEnv($input)
+            Env::extrapolateEnv($input)
         );
     }
 }
