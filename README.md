@@ -28,7 +28,7 @@ m2devbox automatically uses BuildKit if it finds a Docker Engine 18.09 or above.
 m2devbox is distributed in form of a PHAR file. You can use it locally in your project,
 or you can install it globally.
 
-### Global installation (recommended)
+### Global PHAR installation (recommended)
 ```shell
 wget https://github.com/MageGyver/m2devbox/releases/download/0.2/m2devbox.phar
 chmod u+x m2devbox.phar
@@ -41,13 +41,22 @@ directory that is accessible via `$PATH`. For moving, you might need superuser
 privileges (`sudo mv m2devbox.phar /usr/local/bin/m2devbox`).  
 Now you can run `m2devbox` anywhere.
 
-### Local installation
+### Local PHAR installation
 ```shell
 wget https://github.com/MageGyver/m2devbox/releases/download/0.2/m2devbox.phar
 php m2devbox.phar status
 ```
 
 Download the release `m2devbox.phar` to your local machine and use it right away.
+
+### Local Composer installation
+```shell
+composer require magegyver/m2devbox
+php vendor/bin/m2devbox status
+```
+
+Require `magegyver/m2devbox` in your local project and run it from the `vendor/bin/` 
+directory.
 
 ## Usage
 
