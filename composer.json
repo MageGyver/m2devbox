@@ -1,8 +1,8 @@
 {
-    "name": "aeno/mage2-devbox",
-    "description": "Manage multiple Magento 2 instances via Docker",
+    "name": "magegyver/m2devbox",
+    "description": "🚀 Quickly create Magento 2 development environments.",
     "type": "project",
-    "bin": ["devbox"],
+    "bin": ["m2devbox.php"],
     "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
