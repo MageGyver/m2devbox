@@ -71,6 +71,30 @@ class ConfigTest extends TestCase
         unlink($path);
     }
 
+    public function testLoadBuiltinConfig()
+    {
+        Config::load(null);
+
+        $result = Config::get('supported_versions');
+        $this->assertIsArray($result);
+        $this->assertNotEmpty($result);
+
+        $this->assertArrayHasKey('2.3.5', $result);
+        $this->assertArrayHasKey('2.3.6', $result);
+        $this->assertArrayHasKey('2.4.1', $result);
+
+        $this->assertArrayHasKey('recipe_class', $result['2.3.5']);
+        $this->assertArrayHasKey('long_version', $result['2.3.6']);
+        $this->assertArrayHasKey('short_version', $result['2.4.1']);
+        $this->assertArrayHasKey('compose_files', $result['2.4.1']);
+
+        $this->assertEquals('Mage23', $result['2.3.5']['recipe_class']);
+        $this->assertEquals('2.3.6', $result['2.3.6']['long_version']);
+        $this->assertEquals('241', $result['2.4.1']['short_version']);
+
+        $this->assertEquals(['docker-compose.mage-2.3.yml'], $result['2.3.6']['compose_files']);
+    }
+
     public function testLoadFromArray()
     {
         Config::loadFromArray($this->config);
@@ -100,6 +124,13 @@ class ConfigTest extends TestCase
         Config::loadFromArray($this->config);
         $result = Config::get('supported_versions');
         $this->assertNotEmpty( $result);
+    }
+
+    public function testFaultyGet()
+    {
+        Config::loadFromArray($this->config);
+        $result = Config::get('none-existent');
+        $this->assertNull( $result);
     }
 
     public function testGetRecipes()
