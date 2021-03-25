@@ -3,7 +3,7 @@
     "description": "🚀 Quickly create Magento 2 development environments.",
     "keywords": ["magento", "magento2", "docker", "development"],
     "homepage": "https://github.com/MageGyver/m2devbox",
-    "type": "project",
+    "type": "library",
     "bin": ["m2devbox.php"],
     "prefer-stable": true,
     "minimum-stability": "dev",
