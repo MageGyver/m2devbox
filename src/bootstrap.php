@@ -14,8 +14,8 @@ use Devbox\Service\Config;
 use Dotenv\Dotenv;
 
 define('DB_ROOT', dirname(__DIR__));
-const DB_SRC     = DB_ROOT . '/src';
-const DB_VERSION = '@git_tag@';
+const DB_SRC      = DB_ROOT . '/src';
+const M2D_VERSION = '@git_tag@';
 
 require DB_ROOT.'/vendor/autoload.php';
 

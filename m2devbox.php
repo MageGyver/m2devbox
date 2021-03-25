@@ -15,7 +15,7 @@ namespace Devbox;
 require_once(__DIR__.'/src/bootstrap.php');
 
 // init and run application
-$devbox = new Devbox('Mage2 Devbox', DB_VERSION);
+$devbox = new Devbox('Mage2 Devbox', M2D_VERSION);
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $devbox->run();
