@@ -8,7 +8,6 @@
     "file, You can obtain one at https://mozilla.org/MPL/2.0/."
   ],
   "alias": "m2devbox",
-  "output": "m2devbox.phar",
   "compactors": ["KevinGH\\Box\\Compactor\\Json", "KevinGH\\Box\\Compactor\\Php"],
   "compression": "GZ",
   "directories-bin": ["docker"],

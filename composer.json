@@ -11,6 +11,7 @@
         "php": "^7.4||^8.0",
         "ext-json": "*",
         "ext-posix": "*",
+        "ext-curl": "*",
         "symfony/console": "^5.2",
         "vlucas/phpdotenv": "^5.2",
         "symfony/process": "^5.2",

@@ -49,6 +49,10 @@ class CommandLoaderTest extends TestCase
     {
         $appMock = $this->createMock(Devbox::class);
         CommandLoader::addCommandsToApplication($appMock, ['Start', 'Stop', 'Clear']);
+
+        $this->markTestIncomplete(
+            'testAddCommandsToApplication() has not been implemented yet.'
+        );
     }
 
     public function testFindCommands()
@@ -59,6 +63,7 @@ class CommandLoaderTest extends TestCase
                 'Clear',
                 'Cli',
                 'Compose',
+                'SelfUpdate',
                 'Start',
                 'Status',
                 'Stop',
