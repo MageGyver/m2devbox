@@ -38,9 +38,6 @@ RUN a2enmod rewrite
 
 RUN echo "memory_limit=2G" > /usr/local/etc/php/conf.d/memory-limit-php.ini
 
-COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-
-
 RUN apt-get update                                   \
  && apt-get install -y                               \
     rsync                                            \
@@ -83,7 +80,9 @@ RUN npm uninstall gulp-imagemin --save
 RUN npm install gulp-imagemin --save
 
 
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN docker-php-ext-configure gd                      \
       --with-freetype-dir=/usr/include/              \
