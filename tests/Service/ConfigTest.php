@@ -8,12 +8,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox\Service;
+namespace MageGyver\M2devbox\Service;
 
+use MageGyver\M2devbox\Recipe\Mage23;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Devbox\Service\Config
+ * @covers \MageGyver\M2devbox\Service\Config
  */
 class ConfigTest extends TestCase
 {
@@ -62,7 +63,7 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('short_version', $result['2.4.1']);
         $this->assertArrayHasKey('compose_files', $result['2.4.1']);
 
-        $this->assertEquals('Mage23', $result['2.3.5']['recipe_class']);
+        $this->assertEquals(Mage23::class, $result['2.3.5']['recipe_class']);
         $this->assertEquals('2.3.6', $result['2.3.6']['long_version']);
         $this->assertEquals('241', $result['2.4.1']['short_version']);
 
@@ -88,7 +89,7 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('short_version', $result['2.4.1']);
         $this->assertArrayHasKey('compose_files', $result['2.4.1']);
 
-        $this->assertEquals('Mage23', $result['2.3.5']['recipe_class']);
+        $this->assertEquals(Mage23::class, $result['2.3.5']['recipe_class']);
         $this->assertEquals('2.3.6', $result['2.3.6']['long_version']);
         $this->assertEquals('241', $result['2.4.1']['short_version']);
 
@@ -112,7 +113,7 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('short_version', $result['2.4.1']);
         $this->assertArrayHasKey('compose_files', $result['2.4.1']);
 
-        $this->assertEquals('Mage23', $result['2.3.5']['recipe_class']);
+        $this->assertEquals(Mage23::class, $result['2.3.5']['recipe_class']);
         $this->assertEquals('2.3.6', $result['2.3.6']['long_version']);
         $this->assertEquals('241', $result['2.4.1']['short_version']);
 

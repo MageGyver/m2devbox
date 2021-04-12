@@ -8,7 +8,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Util;
+namespace MageGyver\M2devbox\Util;
 
 use MageGyver\M2devbox\Devbox;
 use MageGyver\M2devbox\Util\CommandLoader;
@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * @covers \Devbox\Util\CommandLoader
+ * @covers \MageGyver\M2devbox\Util\CommandLoader
  */
 class CommandLoaderTest extends TestCase
 {
@@ -28,7 +28,7 @@ class CommandLoaderTest extends TestCase
     }
 
     /**
-     * @uses \Devbox\Command\Status
+     * @uses \MageGyver\M2devbox\Command\Status
      */
     public function testInstantiateCommandLowercase()
     {
@@ -37,7 +37,7 @@ class CommandLoaderTest extends TestCase
     }
 
     /**
-     * @uses \Devbox\Command\Status
+     * @uses \MageGyver\M2devbox\Command\Status
      */
     public function testInstantiateCommandUppercase()
     {

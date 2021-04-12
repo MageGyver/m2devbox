@@ -8,13 +8,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Util;
+namespace MageGyver\M2devbox\Util;
 
 use MageGyver\M2devbox\Util\Env;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Devbox\Util\Env
+ * @covers \MageGyver\M2devbox\Util\Env
  */
 class EnvTest extends TestCase
 {

@@ -10,14 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Util;
+namespace MageGyver\M2devbox\Util;
 
 use MageGyver\M2devbox\Util\Updater;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Devbox\Util\Updater
+ * @covers \MageGyver\M2devbox\Util\Updater
  */
 class UpdaterTest extends TestCase
 {
