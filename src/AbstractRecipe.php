@@ -8,12 +8,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox;
+namespace MageGyver\M2devbox;
 
 use AlecRabbit\Snake\Spinner;
-use Devbox\Service\Config;
-use Devbox\Service\State;
-use Devbox\Util\Env;
+use MageGyver\M2devbox\Service\Config;
+use MageGyver\M2devbox\Service\State;
+use MageGyver\M2devbox\Util\Env;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;

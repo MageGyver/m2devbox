@@ -8,7 +8,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox\Util;
+namespace MageGyver\M2devbox\Util;
 
 use function \preg_match, \array_walk, \strtr;
 

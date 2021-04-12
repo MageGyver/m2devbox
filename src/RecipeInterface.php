@@ -8,7 +8,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox;
+namespace MageGyver\M2devbox;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
 

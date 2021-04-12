@@ -8,11 +8,11 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox\Service;
+namespace MageGyver\M2devbox\Service;
 
-use Devbox\AbstractRecipe;
+use MageGyver\M2devbox\AbstractRecipe;
 use Exception;
-use const Devbox\DB_SRC;
+use const MageGyver\M2devbox\DB_SRC;
 
 class Config
 {
@@ -75,8 +75,6 @@ class Config
 
         $versions = static::get('supported_versions');
         foreach ($versions as $version => $versionConfig) {
-            $versionConfig['recipe_class'] = '\Devbox\Recipe\\'.$versionConfig['recipe_class'];
-
             if (class_exists($versionConfig['recipe_class']) && is_subclass_of($versionConfig['recipe_class'], AbstractRecipe::class)) {
                 $result[$version] = $versionConfig;
             }

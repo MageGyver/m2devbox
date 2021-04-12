@@ -8,9 +8,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox;
+namespace MageGyver\M2devbox;
 
-use Devbox\Service\Config;
+use MageGyver\M2devbox\Service\Config;
 use Dotenv\Dotenv;
 
 define('DB_ROOT', dirname(__DIR__));

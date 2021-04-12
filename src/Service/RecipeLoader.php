@@ -8,9 +8,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox\Service;
+namespace MageGyver\M2devbox\Service;
 
-use Devbox\RecipeInterface;
+use MageGyver\M2devbox\RecipeInterface;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 

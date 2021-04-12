@@ -10,10 +10,10 @@
 
 /** @noinspection PhpMissingFieldTypeInspection */
 
-namespace Devbox\Command;
+namespace MageGyver\M2devbox\Command;
 
-use Devbox\Service\Config;
-use Devbox\Service\RecipeLoader;
+use MageGyver\M2devbox\Service\Config;
+use MageGyver\M2devbox\Service\RecipeLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;

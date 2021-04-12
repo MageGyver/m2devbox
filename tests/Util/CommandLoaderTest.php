@@ -10,8 +10,8 @@
 
 namespace Util;
 
-use Devbox\Devbox;
-use Devbox\Util\CommandLoader;
+use MageGyver\M2devbox\Devbox;
+use MageGyver\M2devbox\Util\CommandLoader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 

@@ -23,7 +23,7 @@
         "vimeo/psalm": "^4.4"
     },
     "autoload": {
-        "psr-4": {"Devbox\\": "src/"}
+        "psr-4": {"MageGyver\\M2devbox\\": "src/"}
     },
     "repositories": {
         "alecrabbit/php-cli-snake": {

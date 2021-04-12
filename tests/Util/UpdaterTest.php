@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Util;
 
-use Devbox\Util\Updater;
+use MageGyver\M2devbox\Util\Updater;
 use Exception;
 use PHPUnit\Framework\TestCase;
 

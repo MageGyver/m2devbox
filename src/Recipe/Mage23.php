@@ -8,11 +8,11 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox\Recipe;
+namespace MageGyver\M2devbox\Recipe;
 
-use Devbox\AbstractRecipe;
-use Devbox\Devbox;
-use Devbox\Util\Env;
+use MageGyver\M2devbox\AbstractRecipe;
+use MageGyver\M2devbox\Devbox;
+use MageGyver\M2devbox\Util\Env;
 
 class Mage23 extends AbstractRecipe
 {

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Devbox\Util;
+namespace MageGyver\M2devbox\Util;
 
 use Exception;
 use Phar;

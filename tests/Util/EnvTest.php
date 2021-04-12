@@ -10,7 +10,7 @@
 
 namespace Util;
 
-use Devbox\Util\Env;
+use MageGyver\M2devbox\Util\Env;
 use PHPUnit\Framework\TestCase;
 
 /**

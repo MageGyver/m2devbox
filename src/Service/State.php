@@ -8,7 +8,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox\Service;
+namespace MageGyver\M2devbox\Service;
 
 class State
 {

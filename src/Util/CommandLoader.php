@@ -8,7 +8,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-namespace Devbox\Util;
+namespace MageGyver\M2devbox\Util;
 
 use Exception;
 use Symfony\Component\Console\Application;
@@ -17,7 +17,7 @@ use function \array_diff;
 use function \scandir;
 use function \pathinfo;
 use function \sprintf;
-use const Devbox\DB_SRC;
+use const \MageGyver\M2devbox\DB_SRC;
 
 class CommandLoader
 {
@@ -72,7 +72,7 @@ class CommandLoader
         $commandName = ucfirst($commandName);
 
         if (!class_exists($commandName)) {
-            $commandName = '\\Devbox\\Command\\' . $commandName;
+            $commandName = '\\MageGyver\\M2devbox\\Command\\' . $commandName;
 
             if (!class_exists($commandName)) {
                 throw new Exception(sprintf('Command class %s does not exist!', $commandName));
