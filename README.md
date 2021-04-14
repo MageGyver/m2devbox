@@ -82,19 +82,20 @@ Create a plain-text file called `.env` in your project folder and put each varia
 you want to use in a new line. Assign a value to each variable, separating the 
 variable and value with an `=`.
 
-| Variable            | Default value  | Description                     |
-|---------------------|----------------|---------------------------------|
-| M2D_DC_PROJECT_NAME | m2devbox       | Docker compose project name.
-| M2D_WEB_PORT        | 8080           | Web port used to access the site from your host 
-| M2D_DB_PORT         | 33306          | MySQL port used to access the database from your host
-| M2D_ES_PORT         | 9200           | Elasticsearch port used to access ES from your host
-| M2D_ES_CONTROL_PORT | 9300           | Elasticsearch control port used to access ES from your host
-| M2D_TIMEZONE        | Europe/Berlin  | Timezone to use in Magento 2
-| M2D_MAGE_WEB_DOMAIN | m2.docker      | Web domain used to access the site from your host
-| M2D_MAGE_ADMIN_USER | admin          | Magento 2 admin user name
-| M2D_MAGE_ADMIN_PASS | Admin123!      | Magento 2 admin user password
-| M2D_MAGE_LANG       | en_US          | Magento 2 backend language for the admin account
-| M2D_MAGE_CURRENCY   | EUR            | Default Magento 2 currency
+| Variable            | Default value  | Description                                                      |
+|---------------------|----------------|------------------------------------------------------------------|
+| M2D_DC_PROJECT_NAME | m2devbox       | Docker compose project name.                                     |
+| M2D_WEB_PORT        | 8080           | Web port used to access the site from your host                  |
+| M2D_DB_PORT         | 33306          | MySQL port used to access the database from your host            |
+| M2D_ES_PORT         | 9200           | Elasticsearch port used to access ES from your host              |
+| M2D_ES_CONTROL_PORT | 9300           | Elasticsearch control port used to access ES from your host      |
+| M2D_TIMEZONE        | Europe/Berlin  | Timezone to use in Magento 2                                     |
+| M2D_MAGE_WEB_DOMAIN | m2.docker      | Web domain used to access the site from your host                |
+| M2D_MAGE_ADMIN_USER | admin          | Magento 2 admin user name                                        |
+| M2D_MAGE_ADMIN_PASS | Admin123!      | Magento 2 admin user password                                    |
+| M2D_MAGE_LANG       | en_US          | Magento 2 backend language for the admin account                 |
+| M2D_MAGE_CURRENCY   | EUR            | Default Magento 2 currency                                       |
+| M2D_APP_CODE        | ./app_code/    | The directory where you put your modules. This will be mounted to app/code/ inside the Docker container.  | 
 
 ### CLI Commands
 
