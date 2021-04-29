@@ -22,16 +22,26 @@ class EnvTest extends TestCase
     public function testExtrapolateEnv()
     {
         $_ENV = [
-            'DB_NAME' => 'database',
-            'DB_USER' => 'username',
-            'DB_PASS' => 'password',
+            'M2D_DC_PROJECT_NAME' => 'm2d test',
+            'M2D_TIMEZONE' => 'Europe/Berlin',
+            'M2D_MAGE_LANG' => 'de_DE',
         ];
 
-        $input = 'name = $(DB_NAME), user = $(DB_USER), pass = $(DB_PASS)';
-        $expected = 'name = database, user = username, pass = password';
+        $input = 'project = $(M2D_DC_PROJECT_NAME), tz = $(M2D_TIMEZONE), lang = $(M2D_MAGE_LANG)';
+        $expected = 'project = m2d test, tz = Europe/Berlin, lang = de_DE';
 
         self::assertEquals(
             $expected,
+            Env::extrapolateEnv($input)
+        );
+    }
+
+    public function testDontExtrapolateDisallowedEnv()
+    {
+        $input = 'server = $(SERVER_NAME), tz = $(USERNAME)';
+
+        self::assertEquals(
+            $input,
             Env::extrapolateEnv($input)
         );
     }

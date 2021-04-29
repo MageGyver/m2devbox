@@ -14,6 +14,21 @@ use function \preg_match, \array_walk, \strtr;
 
 class Env
 {
+    const ENV_ALLOWED_LIST = [
+        'M2D_DC_PROJECT_NAME',
+        'M2D_WEB_PORT',
+        'M2D_DB_PORT',
+        'M2D_ES_PORT',
+        'M2D_ES_CONTROL_PORT',
+        'M2D_TIMEZONE',
+        'M2D_MAGE_WEB_DOMAIN',
+        'M2D_MAGE_ADMIN_USER',
+        'M2D_MAGE_ADMIN_PASS',
+        'M2D_MAGE_LANG',
+        'M2D_MAGE_CURRENCY',
+        'M2D_APP_CODE',
+    ];
+
     /**
      * Extrapolate env variables in a string.
      *
@@ -25,9 +40,10 @@ class Env
         if (preg_match('/\$\(.*\)/mU', $string) === 1) {
             $replacements = [];
 
-            // @todo #security: naïvely walk $_ENV or instead walk a white-listed subset of it?
             array_walk($_ENV, function ($v, $k) use (&$replacements) {
-                $replacements['$('.$k.')'] = $v;
+                if (in_array($k, self::ENV_ALLOWED_LIST)) {
+                    $replacements['$(' . $k . ')'] = $v;
+                }
             });
 
             $string = strtr($string, $replacements);
