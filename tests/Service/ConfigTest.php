@@ -74,7 +74,7 @@ class ConfigTest extends TestCase
 
     public function testLoadBuiltinConfig()
     {
-        Config::load(null);
+        Config::load(null, true);
 
         $result = Config::get('supported_versions');
         $this->assertIsArray($result);

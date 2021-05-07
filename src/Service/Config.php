@@ -21,11 +21,12 @@ class Config
     /**
      *  Load the config file.
      *
-     * @param string|null $file
+     * @param string|null $file         Config file to load
+     * @param bool|null   $forceReload  Force skipping config cache
      */
-    public static function load(?string $file = null)
+    public static function load(?string $file = null, ?bool $forceReload = false)
     {
-        if (self::$config === null) {
+        if ($forceReload || self::$config === null) {
             if ($file === null) {
                 /** @psalm-suppress UndefinedConstant */
                 $file = DB_SRC.'/etc/config.php';
