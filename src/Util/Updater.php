@@ -21,7 +21,7 @@ use function is_array;
 use function array_key_exists;
 use function version_compare;
 use function fileperms;
-use const Devbox\M2D_VERSION;
+use const MageGyver\M2devbox\M2D_VERSION;
 
 class Updater
 {
