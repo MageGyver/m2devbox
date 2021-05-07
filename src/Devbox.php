@@ -10,6 +10,7 @@
 
 namespace MageGyver\M2devbox;
 
+use Dotenv\Dotenv;
 use MageGyver\M2devbox\Service\Config;
 use MageGyver\M2devbox\Util\CommandLoader;
 use Exception;
@@ -99,6 +100,29 @@ class Devbox extends Application
             }
 
             $it->next();
+        }
+    }
+
+    /**
+     *  Load (or reload) ENV vars
+     */
+    public static function loadEnv()
+    {
+        $cwd = getcwd();
+
+        // load default ENV vars form config
+        $defaultEnv = Config::get('default_env');
+        foreach ($defaultEnv as $key => $value) {
+            if (!empty($value) && !array_key_exists($key, $_ENV)) {
+                $_ENV[$key] = $value;
+                putenv($key.'='.$value);
+            }
+        }
+
+        // load custom ENV vars from $CWD/.env
+        if (file_exists($cwd.'/.env')) {
+            $dotenv = Dotenv::createMutable($cwd);
+            $dotenv->load();
         }
     }
 }
