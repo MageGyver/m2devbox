@@ -15,6 +15,7 @@
 use MageGyver\M2devbox\Recipe\Mage23;
 use MageGyver\M2devbox\Recipe\Mage24;
 
+// @codeCoverageIgnoreStart
 return [
     'supported_versions' => [
         '2.3.4' => [
@@ -129,3 +130,4 @@ return [
         'M2D_MAGE_CURRENCY'   => 'EUR',
     ],
 ];
+// @codeCoverageIgnoreEnd
