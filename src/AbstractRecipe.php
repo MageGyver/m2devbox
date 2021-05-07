@@ -89,6 +89,11 @@ abstract class AbstractRecipe implements RecipeInterface
         return $this->config['short_version'];
     }
 
+    public function getPhpVersion(): string
+    {
+        return $this->config['php_version'];
+    }
+
     public function isBuilt(): bool
     {
         $this->exec(
@@ -395,7 +400,7 @@ abstract class AbstractRecipe implements RecipeInterface
         // set env vars for Docker Compose yml
         $_env = array_merge(Config::get('default_env'), $env);
         $_env = array_merge($_env, [
-            '_M2D_DOCKER_PHP_IMG_VERSION' => $this->config['php_img_version'],
+            '_M2D_DOCKER_PHP_IMG_VERSION' => $this->getPhpVersion(),
             '_M2D_MAGE_SHORT_VERSION'     => $this->getShortVersion(),
             '_M2D_DB_DIR'                 => $this->getDbDir(),
             '_M2D_MAGE_SRC_DIR'           => $this->getMageSrcDir(),
@@ -464,7 +469,7 @@ abstract class AbstractRecipe implements RecipeInterface
      * @return string
      * @throws Exception
      */
-    protected function getMageSrcDir(): string
+    public function getMageSrcDir(): string
     {
         return Config::getCacheDir().'/mage_src/'.$this->getVersion().'/';
     }

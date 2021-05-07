@@ -10,6 +10,7 @@
 
 namespace MageGyver\M2devbox;
 
+use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 interface RecipeInterface
@@ -29,10 +30,19 @@ interface RecipeInterface
     public function getVersion(): string;
 
     /**
+     * Get the Magento version-specific installation source directory on the host system.
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function getMageSrcDir(): string;
+
+    /**
      * Get Magento short version identifier string.
      * @return string
      */
     public function getShortVersion(): string;
+    public function getPhpVersion(): string;
     public function setIo(?SymfonyStyle $io): self;
     public function start(): void;
     public function stop(): void;
