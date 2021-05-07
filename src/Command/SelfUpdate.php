@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use const MageGyver\M2devbox\M2D_VERSION;
 
 class SelfUpdate extends Command
 {
@@ -50,13 +51,18 @@ class SelfUpdate extends Command
                     $latestReleaseInfo = Updater::extractReleaseInfo($releaseData);
 
                     if (Updater::isNewerVersion($latestReleaseInfo['version'])) {
-                        $updater->doUpdate($latestReleaseInfo['download']);
-                        $io->success('m2devbox was successfully updated to version '.$latestReleaseInfo['version']);
-                        return Command::SUCCESS;
+                        if ($io->confirm('Update from '.M2D_VERSION.' to latest release '.$latestReleaseInfo['version'].'?')) {
+                            $updater->doUpdate($latestReleaseInfo['download']);
+                            $io->success('m2devbox was successfully updated to version '.$latestReleaseInfo['version']);
+                        } else {
+                            $io->warning('Update aborted.');
+                            return Command::FAILURE;
+                        }
                     } else {
-                        $io->success('m2devbox '.$latestReleaseInfo['version'].' is already up-to-date.');
-                        return Command::SUCCESS;
+                        $io->success('m2devbox '.M2D_VERSION.' is already up-to-date.');
                     }
+
+                    return Command::SUCCESS;
                 } catch (Exception $e) {
                     $io->error($e->getMessage()."\nPlease try a manual update by downloading m2devbox again!");
                     return Command::FAILURE;
