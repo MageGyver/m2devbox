@@ -16,6 +16,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class RecipeLoader
 {
+    protected static $recipesCache = [];
+
     /**
      * Get the Recipe instance for a given Magento version.
      *
@@ -30,13 +32,17 @@ class RecipeLoader
             throw new Exception('Version not supported!');
         }
 
-        $recipes = Config::getRecipes();
-        /** @var RecipeInterface $recipe */
-        $recipe = new $recipes[$version]['recipe_class']();
-        $recipe->configure($recipes[$version]);
-        $recipe->setIo($io);
+        if (!array_key_exists($version, self::$recipesCache)) {
+            $recipes = Config::getRecipes();
+            /** @var RecipeInterface $recipe */
+            $recipe = new $recipes[$version]['recipe_class']();
+            $recipe->configure($recipes[$version]);
 
-        return $recipe;
+            self::$recipesCache[$version] = $recipe;
+        }
+
+        $recipe = self::$recipesCache[$version];
+        return $recipe->setIo($io);
     }
 
     /**
@@ -49,13 +55,12 @@ class RecipeLoader
     public static function getAll(?SymfonyStyle $io = null): array
     {
         $recipes = Config::getRecipes();
-        $result = [];
 
         foreach ($recipes as $version => $versionConfig) {
-            $result[] = self::get($version, $io);
+            self::get($version, $io);
         }
 
-        return $result;
+        return self::$recipesCache;
     }
 
     /**
@@ -69,10 +74,25 @@ class RecipeLoader
     {
         $result = self::getAll($io);
 
-        $result = array_filter($result, function(RecipeInterface $recipe) {
+        return array_filter($result, function(RecipeInterface $recipe) {
             return $recipe->isRunning();
         });
+    }
 
-        return $result;
+    /**
+     * Get the Recipe correspondig to the newest support Magento 2 version.
+     *
+     * @param SymfonyStyle|null $io
+     * @return RecipeInterface
+     * @throws Exception
+     */
+    public static function getNewest(?SymfonyStyle $io = null): RecipeInterface
+    {
+        $recipes = self::getAll($io);
+        uksort($recipes, function ($a, $b) {
+            return version_compare($a, $b);
+        });
+
+        return end($recipes);
     }
 }
