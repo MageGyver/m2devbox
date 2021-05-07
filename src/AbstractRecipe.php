@@ -398,8 +398,8 @@ abstract class AbstractRecipe implements RecipeInterface
         array_push($commandLine, ...$commands);
 
         // set env vars for Docker Compose yml
-        $_env = array_merge(Config::get('default_env'), $env);
-        $_env = array_merge($_env, [
+        $__env = array_merge(Config::get('default_env'), $env);
+        $__env = array_merge($__env, [
             '_M2D_DOCKER_PHP_IMG_VERSION' => $this->getPhpVersion(),
             '_M2D_MAGE_SHORT_VERSION'     => $this->getShortVersion(),
             '_M2D_DB_DIR'                 => $this->getDbDir(),
@@ -410,7 +410,7 @@ abstract class AbstractRecipe implements RecipeInterface
         ]);
 
         // execute command line
-        return $this->exec($commandLine, $_env, $output, $showOutputInSpinner, $allocateTty);
+        return $this->exec($commandLine, $__env, $output, $showOutputInSpinner, $allocateTty);
     }
 
     /**
@@ -480,6 +480,7 @@ abstract class AbstractRecipe implements RecipeInterface
     protected function getAppCodeDir(): string
     {
         $envAppCodeDir = $_ENV['M2D_APP_CODE'];
+        // @todo: exists() before readlink() doesn't make sense
         if ($envAppCodeDir && $this->filesystem->exists($envAppCodeDir)) {
             $return = $this->filesystem->readlink($envAppCodeDir, true);
             if (!empty($return)) {
