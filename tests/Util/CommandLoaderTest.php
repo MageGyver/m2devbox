@@ -60,6 +60,7 @@ class CommandLoaderTest extends TestCase
         $commands = CommandLoader::findCommands();
         $this->assertEqualsCanonicalizing(
             [
+                'StartModule',
                 'Clear',
                 'Cli',
                 'Compose',

@@ -9,14 +9,15 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7.4||^8.0",
+        "ext-curl": "*",
         "ext-json": "*",
         "ext-posix": "*",
-        "ext-curl": "*",
-        "symfony/console": "^5.2",
-        "vlucas/phpdotenv": "^5.2",
-        "symfony/process": "^5.2",
         "alecrabbit/php-cli-snake": "dev-feature/status-messages#3b70a51280aae1be7d975cc0a563f76d03133623",
-        "symfony/filesystem": "^5.2"
+        "symfony/console": "^5.2",
+        "symfony/filesystem": "^5.2",
+        "symfony/polyfill-uuid": "^1.22",
+        "symfony/process": "^5.2",
+        "vlucas/phpdotenv": "^5.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^9",

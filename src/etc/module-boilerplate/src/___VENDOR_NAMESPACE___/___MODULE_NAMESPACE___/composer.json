@@ -1,0 +1,26 @@
+{
+  "name": "###VENDOR###/###MODULE###",
+  "type": "magento2-module",
+  "authors": [
+    {
+      "name": "John Doe",
+      "email": "johndoe@example.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "magento/framework": "*"
+  },
+  "license": [
+    "Proprietary"
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "###VENDOR_NAMESPACE###\\###MODULE_NAMESPACE###\\": ""
+    }
+  },
+  "description": "Change me!"
+}
