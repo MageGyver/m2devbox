@@ -479,7 +479,7 @@ abstract class AbstractRecipe implements RecipeInterface
      */
     protected function getAppCodeDir(): string
     {
-        $envAppCodeDir = getenv('M2D_APP_CODE');
+        $envAppCodeDir = $_ENV['M2D_APP_CODE'];
         if ($envAppCodeDir && $this->filesystem->exists($envAppCodeDir)) {
             $return = $this->filesystem->readlink($envAppCodeDir, true);
             if (!empty($return)) {
