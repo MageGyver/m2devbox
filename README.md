@@ -25,8 +25,8 @@ m2devbox automatically uses BuildKit if it finds a Docker Engine 18.09 or above.
 
 ## Installation
 
-m2devbox is distributed in form of a PHAR file. You can use it locally in your project,
-or you can install it globally.
+m2devbox is available as a PHAR file or as a Composer package. 
+You can use it locally in your project, or you can install it globally.
 
 ### Global PHAR installation (recommended)
 ```shell
@@ -36,9 +36,12 @@ mv m2devbox.phar /usr/local/bin/m2devbox
 m2devbox status
 ```
 
-Download the release `m2devbox.phar` to your local machine and move it to some 
-directory that is accessible via `$PATH`. For moving, you might need superuser 
-privileges (`sudo mv m2devbox.phar /usr/local/bin/m2devbox`).  
+Download the [latest m2devbox.phar](https://github.com/MageGyver/m2devbox/releases/latest/download/m2devbox.phar) 
+to your local machine,  and move it to some directory that is accessible via `$PATH`.
+For moving, you might need superuser privileges:   
+```shell
+sudo mv m2devbox.phar /usr/local/bin/m2devbox
+```
 Now you can run `m2devbox` anywhere.
 
 ### Local PHAR installation
@@ -65,15 +68,25 @@ and testing Magento 2 extensions inside it.
 
 ### Workflow
 
+#### Starting a plain Magento 2 instance
+
 1. Navigate to a project directory somewhere on your machine.
-1. Create a `app_code/` directory. This directory will be mounted into the 
+2. Create a `app_code/` directory. This directory will be mounted into the 
    `app/code/` directory of your Magento 2 instance and holds all your module
    source code.
-2. **_(optional)_** Create a `.env` file in the root of your project directory to 
+3. **_(optional)_** Create a `.env` file in the root of your project directory to 
    [customize m2devbox settings](#custom-settings) for your project.
-3. Start an instance with your desired Magento 2 version: `m2devbox start 2.4.2`
-4. Add `127.0.0.1    m2.docker` to your `/etc/hosts` file, to be able to access your site.
-5. Navigate to http://m2.docker:8080 and see your modules in action!
+4. Start an instance with your desired Magento 2 version: `m2devbox start 2.4.2`
+5. Add `127.0.0.1    m2.docker` to your `/etc/hosts` file, to be able to access your site.
+6. Navigate to http://m2.docker:8080 and see your modules in action!
+
+#### Create a new blank module and start a Magento 2 instance
+
+1. Run `m2devbox start-module`
+2. Answer the following basic questions regarding your module name and project directory.
+3. m2devbox will create a blank module and start your Magento 2 instance.
+5. Add `127.0.0.1    m2.docker` to your `/etc/hosts` file, to be able to access your site.
+6. Navigate to http://m2.docker:8080 and see your modules in action!
 
 ### Custom settings
 
@@ -84,6 +97,7 @@ variable and value with an `=`.
 
 | Variable            | Default value  | Description                                                      |
 |---------------------|----------------|------------------------------------------------------------------|
+| M2D_APP_CODE        | ./app_code/    | The directory where you put your modules. This will be mounted to app/code/ inside the Docker container.  | 
 | M2D_DC_PROJECT_NAME | m2devbox       | Docker compose project name.                                     |
 | M2D_WEB_PORT        | 8080           | Web port used to access the site from your host                  |
 | M2D_DB_PORT         | 33306          | MySQL port used to access the database from your host            |
@@ -95,7 +109,6 @@ variable and value with an `=`.
 | M2D_MAGE_ADMIN_PASS | Admin123!      | Magento 2 admin user password                                    |
 | M2D_MAGE_LANG       | en_US          | Magento 2 backend language for the admin account                 |
 | M2D_MAGE_CURRENCY   | EUR            | Default Magento 2 currency                                       |
-| M2D_APP_CODE        | ./app_code/    | The directory where you put your modules. This will be mounted to app/code/ inside the Docker container.  | 
 
 ### CLI Commands
 
@@ -106,6 +119,26 @@ m2devbox [status]
 
 Running `m2devbox` without arguments or with the `status`argument displays what 
 instances are currently running.
+
+#### Create a blank module
+```shell
+m2devbox start-module [--vendor=VENDOR] [--module=MODULE] [--project-path=PROJECT_PATH] [--mage-version=VERSION] [--phpstorm] [--start] 
+```
+
+This command creates a blank Magento 2 module inside the specified project directory, consisting of only the basic `registration.php` and `etc/module.xml` files.  
+Depending on your given options, m2devbox will create a PhpStorm project folder (`.idea`) pre-configured with settings for the official [Magento 2 PhpStorm Plugin](https://github.com/magento/magento2-phpstorm-plugin).
+
+
+| Option            | Default value  | Description
+|-------------------|----------------|--------------
+| `--vendor` | - | Your module's vendor name
+| `--module` | - | Your module's name
+| `--project-path` | (current working dir) | The directory where the module files will be created
+| `--phpstorm` | true | If supplied, create a PhpStorm project directory (`.idea`) with the module
+| `--start` | true | If supplied, start a Magento 2 instance with the module already mounted inside it
+| `--mage-version` | (latest version) | _(mandatory only if `--start` or `--phpstorm` are supplied)_ The Magento 2 version to start or configure
+
+You can either supply these options via command line arguments, or interactively answer questions when running the command without arguments.
 
 #### Start an instance
 ```shell
