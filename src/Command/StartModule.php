@@ -149,6 +149,11 @@ class StartModule extends Command
         $this->io->writeln(sprintf('<info>Successfully created module at %s</info>', $projectDir));
 
         if ($startMagentoInstance) {
+            $running = RecipeLoader::getRunning($this->io);
+            foreach ($running as $runningRecipe) {
+                $runningRecipe->stop();
+            }
+
             // reload env vars from module root directory
             chdir($projectDir);
             Devbox::loadEnv();
