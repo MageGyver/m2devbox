@@ -66,9 +66,9 @@ return [
             'php_img_version' => '7.3',
             'compose_files'   => ['docker-compose.mage-2.3.yml'],
         ],
-        '2.3.6-1' => [
+        '2.3.6-p1' => [
             'recipe_class'    => Mage23::class,
-            'long_version'    => '2.3.6-1',
+            'long_version'    => '2.3.6-p1',
             'short_version'   => '236p1',
             'php_version'     => '7.3',
             'php_img_version' => '7.3',
