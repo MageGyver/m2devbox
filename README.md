@@ -30,7 +30,7 @@ You can use it locally in your project, or you can install it globally.
 
 ### Global PHAR installation (recommended)
 ```shell
-wget https://github.com/MageGyver/m2devbox/releases/download/0.2/m2devbox.phar
+wget https://github.com/MageGyver/m2devbox/releases/latest/download/m2devbox.phar
 chmod u+x m2devbox.phar
 mv m2devbox.phar /usr/local/bin/m2devbox
 m2devbox status
@@ -46,7 +46,7 @@ Now you can run `m2devbox` anywhere.
 
 ### Local PHAR installation
 ```shell
-wget https://github.com/MageGyver/m2devbox/releases/download/0.2/m2devbox.phar
+wget https://github.com/MageGyver/m2devbox/releases/latest/download/m2devbox.phar
 php m2devbox.phar status
 ```
 

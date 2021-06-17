@@ -10,7 +10,11 @@
 
 namespace MageGyver\M2devbox;
 
-use AlecRabbit\Snake\Spinner;
+use Aeno\SlickProgress\Colors;
+use Aeno\SlickProgress\Progress;
+use Aeno\SlickProgress\Theme\AbstractTheme;
+use Aeno\SlickProgress\Theme\Snake;
+use Aeno\SlickProgress\ThemeInterface;
 use MageGyver\M2devbox\Service\Config;
 use MageGyver\M2devbox\Service\State;
 use MageGyver\M2devbox\Util\Env;
@@ -309,20 +313,21 @@ abstract class AbstractRecipe implements RecipeInterface
     public function exec(array $commandLine, array $env = [], string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int
     {
         $io = $this->io;
-        $spinner = null;
+
+        $progress = null;
 
         if ($io && $io->isVerbose()) {
             $io->writeln('<comment>[executing]</comment> '.implode(' ', $commandLine));
         } elseif (!$allocateTty) {
-            $spinner = new Spinner();
-            $spinner->begin();
+            $progress = new Progress((new Snake())->setColorType(Colors::COLOR_TYPE_ANSI256));
+            $progress->start(-1);
         }
 
-        $callback = function ($type, $buffer) use ($io, $spinner, $showOutputInSpinner) {
+        $callback = function ($type, $buffer) use ($io, $progress, $showOutputInSpinner) {
             if ($io && $io->isVerbose()) {
                 $io->writeln("<info>\t" . strtoupper($type) . '</info> > ' . trim($buffer));
-            } else if ($spinner !== null && $showOutputInSpinner) {
-                $spinner->setMessage($buffer);
+            } else if ($progress !== null && $showOutputInSpinner) {
+                $progress->setStatusMessage($buffer);
             }
         };
 
@@ -338,14 +343,14 @@ abstract class AbstractRecipe implements RecipeInterface
             ->start($callback)
         ;
 
-        if ($io && !$io->isVerbose() && $spinner !== null) {
+        if ($io && !$io->isVerbose() && $progress !== null) {
             while ($p->isRunning()) {
-                $spinner->spin();
+                $progress->advance();
             }
         }
 
-        if ($io && !$io->isVerbose() && $spinner !== null) {
-            $spinner->end();
+        if ($io && !$io->isVerbose() && $progress !== null) {
+            $progress->finish(ThemeInterface::FINISH_TYPE_CLEAR);
         } else {
             $p->wait($callback);
         }
@@ -614,19 +619,19 @@ abstract class AbstractRecipe implements RecipeInterface
      */
     protected function waitForServiceToBecomeHealthy(string $serviceName, int $timeout = 300): bool
     {
-        $spinner = new Spinner();
-        $spinner->begin();
-        $spinner->setMessage('Waiting for '.$serviceName.' service to become ready...');
+        $spinner = new Progress((new Snake())->setColorType(Colors::COLOR_TYPE_ANSI256));
+        $spinner->start(-1);
+        $spinner->setStatusMessage('Waiting for '.$serviceName.' service to become ready...');
 
         $timeout = microtime(true) + $timeout;
 
         $status = $this->getHealthiness($serviceName);
 
         while ($status !== '"healthy"') {
-            $spinner->spin();
+            $spinner->advance();
 
             if (($status === '"unhealthy"') || (microtime(true) > $timeout)) {
-                $spinner->end();
+                $spinner->finish(ThemeInterface::FINISH_TYPE_CLEAR);
                 return false;
             }
 
@@ -634,7 +639,7 @@ abstract class AbstractRecipe implements RecipeInterface
             $status = $this->getHealthiness($serviceName);
         }
 
-        $spinner->end();
+        $spinner->finish(ThemeInterface::FINISH_TYPE_CLEAR);
         return true;
     }
 }

@@ -12,7 +12,7 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-posix": "*",
-        "alecrabbit/php-cli-snake": "dev-feature/status-messages#3b70a51280aae1be7d975cc0a563f76d03133623",
+        "aeno/php-slickprogress": "^1.0.0",
         "symfony/console": "^5.2",
         "symfony/filesystem": "^5.2",
         "symfony/polyfill-uuid": "^1.22",
@@ -25,12 +25,6 @@
     },
     "autoload": {
         "psr-4": {"MageGyver\\M2devbox\\": "src/"}
-    },
-    "repositories": {
-        "alecrabbit/php-cli-snake": {
-            "type": "vcs",
-            "url": "https://github.com/aeno/php-cli-snake"
-        }
     },
     "authors": [
         {
