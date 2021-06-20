@@ -12,6 +12,7 @@
 
 namespace MageGyver\M2devbox\Command;
 
+use MageGyver\M2devbox\RecipeInterface;
 use MageGyver\M2devbox\Service\RecipeLoader;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -29,8 +30,8 @@ class Clear extends Command
     {
         $this
             ->setDescription('Clear a Magento environment.')
-            ->addArgument('version', InputArgument::OPTIONAL, 'Magento version to clear. Omit to clear all versions.')
-            ->setHelp('This command clears the given Magento version and removes it from the system.')
+            ->addArgument('versions', InputArgument::OPTIONAL|InputArgument::IS_ARRAY, 'Magento versions to clear. Omit to clear all versions.')
+            ->setHelp('This command clears the given Magento versions and removes it from the system.')
         ;
     }
 
@@ -39,15 +40,20 @@ class Clear extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $version = $input->getArgument('version');
+            $versions = $input->getArgument('versions');
 
-            if ($version !== null) {
-                $recipes = [RecipeLoader::get($version, $io)];
+            if (!empty($versions)) {
+                $recipes = RecipeLoader::getMultiple($versions, $io);
+                $confirmText = sprintf(
+                    'Are you sure you want to clear these Magento environments: %s?',
+                    implode(', ', array_keys($recipes))
+                );
             } else {
                 $recipes = RecipeLoader::getAll($io);
+                $confirmText = 'Are you sure you want to clear <error>all</error> Magento environments?';
             }
 
-            if ($io->confirm('Are you sure you want to clear the given environments?', false)) {
+            if ($io->confirm($confirmText, false)) {
                 foreach ($recipes as $recipe) {
                     $recipe->clear();
                     return Command::SUCCESS;

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - swapped custom fork of alecrabbit/php-cli-snake for aeno/php-slickprogress
+- Clear Command: allow clearing multiple versions at once
 
 ## [1.0.0]
 ### Added

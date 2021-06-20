@@ -29,7 +29,7 @@ class RecipeLoader
     public static function get(string $version, ?SymfonyStyle $io = null): RecipeInterface
     {
         if (!array_key_exists($version, Config::get('supported_versions'))) {
-            throw new Exception('Version not supported!');
+            throw new Exception(sprintf('Version "%s"not supported!', $version));
         }
 
         if (!array_key_exists($version, self::$recipesCache)) {
@@ -43,6 +43,25 @@ class RecipeLoader
 
         $recipe = self::$recipesCache[$version];
         return $recipe->setIo($io);
+    }
+
+    /**
+     * Get Recipe instances.
+     *
+     * @param string[]          $versions
+     * @param SymfonyStyle|null $io
+     * @return RecipeInterface[]
+     * @throws Exception
+     */
+    public static function getMultiple(array $versions, ?SymfonyStyle $io = null): array
+    {
+        $result = [];
+
+        foreach ($versions as $version) {
+            $result[$version] = self::get($version, $io);
+        }
+
+        return $result;
     }
 
     /**
