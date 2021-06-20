@@ -202,6 +202,7 @@ Magento CLI commands like `bin/magento cache:clean`.
 * 2.4.1
 * 2.4.1-p1
 * 2.4.2
+* 2.4.2-p1
 
 ## License
 
