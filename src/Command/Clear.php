@@ -18,6 +18,7 @@ use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -30,6 +31,7 @@ class Clear extends Command
     {
         $this
             ->setDescription('Clear a Magento environment.')
+            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Assume "yes" as answer to all questions.')
             ->addArgument('versions', InputArgument::OPTIONAL|InputArgument::IS_ARRAY, 'Magento versions to clear. Omit to clear all versions.')
             ->setHelp('This command clears the given Magento versions and removes it from the system.')
         ;
@@ -53,12 +55,11 @@ class Clear extends Command
                 $confirmText = 'Are you sure you want to clear <error>all</error> Magento environments?';
             }
 
-            if ($io->confirm($confirmText, false)) {
+            if ($input->getOption('yes') || $io->confirm($confirmText, false)) {
                 foreach ($recipes as $recipe) {
                     $recipe->clear();
-                    return Command::SUCCESS;
                 }
-
+            } else {
                 return Command::FAILURE;
             }
 
