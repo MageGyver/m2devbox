@@ -20,6 +20,7 @@ class Env
         'M2D_DB_PORT',
         'M2D_ES_PORT',
         'M2D_ES_CONTROL_PORT',
+        'M2D_REDIS_PORT',
         'M2D_TIMEZONE',
         'M2D_MAGE_WEB_DOMAIN',
         'M2D_MAGE_ADMIN_USER',

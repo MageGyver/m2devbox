@@ -10,6 +10,7 @@
 
 namespace MageGyver\M2devbox\Recipe;
 
+use Exception;
 use MageGyver\M2devbox\AbstractRecipe;
 use MageGyver\M2devbox\Devbox;
 use MageGyver\M2devbox\Util\Env;
@@ -21,6 +22,7 @@ class Mage23 extends AbstractRecipe
         return [
             "m2devbox-{$this->getShortVersion()}-db",
             "m2devbox-{$this->getShortVersion()}-web",
+            "m2devbox-{$this->getShortVersion()}-redis",
         ];
     }
 
@@ -103,6 +105,42 @@ COMMAND;
             $installCommand,
             'db'
         );
+
+        $this->configureRedis();
+    }
+
+    /**
+     * Configure Magento cache and page cache to use Redis.
+     *
+     * @throws Exception
+     */
+    protected function configureRedis(): void
+    {
+        $commands = [
+            <<<COMMAND
+            /var/www/html/bin/magento setup:config:set          \
+                --cache-backend=redis                           \
+                --cache-backend-redis-server="m2devbox-{$this->getShortVersion()}-redis" \
+                --cache-backend-redis-port="$(M2D_REDIS_PORT)"  \
+                --cache-backend-redis-db=0
+COMMAND,
+            <<<COMMAND
+            /var/www/html/bin/magento setup:config:set      \
+                --page-cache=redis                          \
+                --page-cache-redis-server="m2devbox-{$this->getShortVersion()}-redis" \
+                --page-cache-redis-port="$(M2D_REDIS_PORT)" \
+                --page-cache-redis-db=1
+COMMAND,
+
+        ];
+
+        foreach ($commands as $command) {
+            $this->inDocker(
+                'web',
+                Env::extrapolateEnv($command),
+                'redis'
+            );
+        }
     }
 
 }

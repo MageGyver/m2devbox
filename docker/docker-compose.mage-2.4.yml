@@ -3,8 +3,6 @@ services:
     environment:
       MYSQL_DATABASE: "magento2_${_M2D_MAGE_SHORT_VERSION}"
     container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-db"
-    networks:
-      - elastic
 
   web:
     container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-web"
@@ -13,11 +11,10 @@ services:
     depends_on:
       - elastic
       - db
+      - redis
     volumes:
       - "${_M2D_MAGE_SRC_DIR}:/var/www/html:cached"
       - "${_M2D_APP_CODE_DIR}:/var/www/html/app/code:cached"
-    networks:
-      - elastic
 
   elastic:
     container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-elastic"
@@ -39,12 +36,11 @@ services:
       - "${M2D_ES_PORT}:9200"
       - "${M2D_ES_CONTROL_PORT}:9300"
     networks:
-      - elastic
+      - m2dnet
+
+  redis:
+    container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-redis"
 
 volumes:
   data-elastic:
     driver: local
-
-networks:
-  elastic:
-    driver: bridge

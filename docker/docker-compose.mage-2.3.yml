@@ -8,8 +8,12 @@ services:
     container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-web"
     depends_on:
       - db
+      - redis
     build:
       context: ./php/${_M2D_DOCKER_PHP_IMG_VERSION}
     volumes:
       - "${_M2D_MAGE_SRC_DIR}:/var/www/html:cached"
       - "${_M2D_APP_CODE_DIR}:/var/www/html/app/code:cached"
+
+  redis:
+    container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-redis"

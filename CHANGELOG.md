@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- m2devbox now includes a Redis container and uses it for Magento caching and page caching
+
 ### Changed
 - swapped custom fork of alecrabbit/php-cli-snake for aeno/php-slickprogress
 - Clear Command: allow clearing multiple versions at once

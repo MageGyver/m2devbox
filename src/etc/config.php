@@ -138,6 +138,7 @@ return [
         'M2D_DB_PORT'         => 33306,
         'M2D_ES_PORT'         => 9200,
         'M2D_ES_CONTROL_PORT' => 9300,
+        'M2D_REDIS_PORT'      => 6379,
         'M2D_TIMEZONE'        => 'Europe/Berlin',
         'M2D_MAGE_WEB_DOMAIN' => 'm2.docker',
         'M2D_MAGE_ADMIN_USER' => 'admin',

@@ -103,6 +103,7 @@ variable and value with an `=`.
 | M2D_DB_PORT         | 33306          | MySQL port used to access the database from your host            |
 | M2D_ES_PORT         | 9200           | Elasticsearch port used to access ES from your host              |
 | M2D_ES_CONTROL_PORT | 9300           | Elasticsearch control port used to access ES from your host      |
+| M2D_REDIS_PORT      | 6379           | Redis port used to access Redis from your host                   |
 | M2D_TIMEZONE        | Europe/Berlin  | Timezone to use in Magento 2                                     |
 | M2D_MAGE_WEB_DOMAIN | m2.docker      | Web domain used to access the site from your host                |
 | M2D_MAGE_ADMIN_USER | admin          | Magento 2 admin user name                                        |
