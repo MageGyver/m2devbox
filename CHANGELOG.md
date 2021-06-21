@@ -4,20 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2021-06-21
 ### Added
 - m2devbox now includes a Redis container and uses it for Magento caching and page caching
-- Clear command: added --yes option to answer all question with "yes" 
+- Clear command: added `--yes` option to answer all question with "yes" 
 
 ### Changed
-- swapped custom fork of alecrabbit/php-cli-snake for aeno/php-slickprogress
+- swapped custom fork of `alecrabbit/php-cli-snake` for `aeno/php-slickprogress`
 - improved code documentation and readability
 
 ### Fixed
 - Clear Command: allow clearing multiple versions at once
 - Fixed using the wrong PHP Docker build context. This bug prevented having Composer 2 available in supported Magento versions.
 
-## [1.0.0]
+## [1.0.0] - 2021-05-12
 ### Added
 - new Command `start-module` to quickly create a blank boilerplate Magento 2 module and start m2devbox with it
 - added support for Magento 2.3.7 and 2.4.2-p1
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - changed PHP namespace from "Devbox\" to "MageGyver\M2devbox"
 
 ### Fixed
-- fixed reading M2D_APP_DEV env var from getenv() resulting in `null`
+- fixed reading `M2D_APP_DEV` env var from getenv() resulting in `null`
 - fixed Magento version string for 2.3.6-p1
 
 ### Security
@@ -58,7 +58,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - initial public release
 
-[Unreleased]: https://github.com/MageGyver/m2devbox/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/MageGyver/m2devbox/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/MageGyver/m2devbox/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/MageGyver/m2devbox/compare/0.2.2...1.0.0
 [0.2.2]: https://github.com/MageGyver/m2devbox/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/MageGyver/m2devbox/compare/0.2...0.2.1
