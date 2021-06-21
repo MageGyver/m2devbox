@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Clear Command: allow clearing multiple versions at once
+- Fixed using the wrong PHP Docker build context. This bug prevented having Composer 2 available in supported Magento versions.
 
 ## [1.0.0]
 ### Added

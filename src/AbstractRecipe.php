@@ -498,7 +498,7 @@ abstract class AbstractRecipe implements RecipeInterface
         // set env vars for Docker Compose yml
         $__env = array_merge(Config::get('default_env'), $env);
         $__env = array_merge($__env, [
-            '_M2D_DOCKER_PHP_IMG_VERSION' => $this->getPhpVersion(),
+            '_M2D_DOCKER_PHP_IMG_VERSION' => $this->getPhpImageVersion(),
             '_M2D_MAGE_SHORT_VERSION'     => $this->getShortVersion(),
             '_M2D_DB_DIR'                 => $this->getDbDir(),
             '_M2D_MAGE_SRC_DIR'           => $this->getMageSrcDir(),
