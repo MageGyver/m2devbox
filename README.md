@@ -165,15 +165,16 @@ This command stops the currently running Magento 2 instance.
 
 #### Clear an instance
 ```shell
-m2devbox clear [<versions>]
+m2devbox clear [--yes] [<versions>]
 ```
 
 This command stops the given instance(s) and deletes the associated Magento 2 source
 files and database.
 
-| Argument     | Optional?  | Description |
-|--------------|------------|-------------|
-| `versions`   | _optional_ | Space-separated list of versions to be cleared or blank to clear all versions. |
+| Argument/Option | Optional?  | Description                                   |
+|-----------------|------------|-----------------------------------------------|
+| `--yes`         | _optional_ | Answer all interactive questions with "yes"   |
+| `versions`      | _optional_ | Space-separated list of versions to be cleared or blank to clear all versions. |
 
 #### Running CLI commands inside an instance
 ```shell

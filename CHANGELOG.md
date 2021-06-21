@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - m2devbox now includes a Redis container and uses it for Magento caching and page caching
+- Clear command: added --yes option to answer all question with "yes" 
 
 ### Changed
 - swapped custom fork of alecrabbit/php-cli-snake for aeno/php-slickprogress

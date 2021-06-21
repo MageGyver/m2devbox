@@ -283,7 +283,53 @@ abstract class AbstractRecipe implements RecipeInterface
             }
         }
 
+        $this->clearContainers();
+
         $this->status('<info>✅ Magento %s was successfully cleared.</info>', [$this->getVersion()]);
+    }
+
+    /**
+     * Remove Docker containers associated with this Recipe's Magento version.
+     *
+     * @throws Exception
+     */
+    protected function clearContainers(): bool
+    {
+        $this->status('<info>🗑️ Removing Docker containers for Magento %s...</info>', [$this->getVersion()]);
+
+        $this->exec(
+            ['docker', 'ps', '-a', '-f', 'name=m2devbox', '--format', '{{.ID}};{{.Names}}'],
+            [],
+            $containersOutput,
+            false
+        );
+
+        if (is_string($containersOutput) && !empty($containersOutput)) {
+            $containersOutput = explode("\n", $containersOutput);
+            $builtContainers = [];
+            foreach ($containersOutput as $line) {
+                $fields = explode(';', $line);
+                /** @psalm-suppress RedundantCondition */
+                if (is_array($fields) && count($fields) === 2) {
+                    $builtContainers[$fields[0]] = $fields[1];
+                }
+            }
+
+            $builtContainers = array_intersect($builtContainers, $this->getExpectedContainers());
+            foreach ($builtContainers as $id => $name) {
+                if (!empty($id)) {
+                    $this->exec(
+                        ['docker', 'rm', '-f', '-v', $id],
+                        [],
+                        $removeOutput
+                    );
+                }
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     protected function getState(string $key)
