@@ -25,6 +25,7 @@ interface RecipeInterface
 
     /**
      * Get Magento long version string.
+     *
      * @return string
      */
     public function getVersion(): string;
@@ -39,23 +40,76 @@ interface RecipeInterface
 
     /**
      * Get Magento short version identifier string.
+     *
      * @return string
      */
     public function getShortVersion(): string;
+
+    /**
+     * Get the PHP version for use with this Magento environment.
+     *
+     * @return string
+     */
     public function getPhpVersion(): string;
+
+    /**
+     * Get the PHP Docker image version for use with this Magento environment.
+     *
+     * @return string
+     */
+    public function getPhpImageVersion(): string;
+
+    /**
+     * Set SimfonyStyle instance to this Recipe (for shell output).
+     *
+     * @param SymfonyStyle|null $io
+     * @return $this
+     */
     public function setIo(?SymfonyStyle $io): self;
+
+    /**
+     * Start Magento environment.
+     *
+     * @throws Exception
+     */
     public function start(): void;
+
+    /**
+     * Stop Magento environment.
+     */
     public function stop(): void;
+
+    /**
+     * Clear Magento environment. That is, delete all persisted files
+     * associated with this version.
+     */
     public function clear(): void;
+
+    /**
+     * Check, whether the Docker images for Magento environment were already
+     * built.
+     *
+     * @return bool
+     */
     public function isBuilt(): bool;
+
+    /**
+     * Check, whether this Magento version is currently running.
+     *
+     * @return bool
+     */
     public function isRunning(): bool;
 
     /**
-     * @param string|array $commands
-     * @param string|null     $output (Optional) Command output
-     * @param bool            $showOutputInSpinner
-     * @param bool            $allocateTty
-     * @return int|null
+     * Execute a Docker Compose command
+     *
+     * @param string|array $arguments           Docker Compose arguments to execute (ex. "run" or ["up", "-d"])
+     * @param string|null  $output              (Optional) Command output
+     * @param bool         $showOutputInSpinner Show live command output in spinner status line
+     * @param bool         $allocateTty         Allocate a TTY (useful for things like "docker-compose exec web bash")
+     * @param array        $env                 ENV variables for the process
+     * @return int|null                 Exit code of the process
+     * @throws Exception
      */
-    public function dockerCompose($commands, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false): ?int;
+    public function dockerCompose($arguments, ?string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false, array $env = []): ?int;
 }

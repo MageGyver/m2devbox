@@ -12,7 +12,6 @@ namespace MageGyver\M2devbox;
 
 use Aeno\SlickProgress\Colors;
 use Aeno\SlickProgress\Progress;
-use Aeno\SlickProgress\Theme\AbstractTheme;
 use Aeno\SlickProgress\Theme\Snake;
 use Aeno\SlickProgress\ThemeInterface;
 use MageGyver\M2devbox\Service\Config;
@@ -52,13 +51,32 @@ abstract class AbstractRecipe implements RecipeInterface
         return $this;
     }
 
+    /**
+     * Get an array of Docker container names that are associated with this
+     * Recipe. These containers are expected to exist after a successful build.
+     *
+     * @return string[]
+     */
     abstract protected function getExpectedContainers(): array;
 
+    /**
+     * Get basic Docker Compose files to use with docker-compose commands.
+     *
+     * @return string[] Array of absolute file paths
+     * @throws Exception
+     */
     protected function getBaseDockerComposeFiles(): array
     {
         return [$this->getDockerFilename('docker-compose.yml')];
     }
 
+    /**
+     * Get Docker Compose files to use with docker-compose commands specific
+     * to this Recipe version.
+     *
+     * @return string[] Array of absolute file paths
+     * @throws Exception
+     */
     protected function getVersionSpecificDockerComposeFiles(): array
     {
         $files = $this->config['compose_files'];
@@ -69,6 +87,12 @@ abstract class AbstractRecipe implements RecipeInterface
         return $files;
     }
 
+    /**
+     * Get an array of Docker Compose files for use with "docker-compose -f".
+     *
+     * @return string[]
+     * @throws Exception
+     */
     protected function getDockerComposeFiles(): array
     {
         return array_merge(
@@ -98,6 +122,14 @@ abstract class AbstractRecipe implements RecipeInterface
         return $this->config['php_version'];
     }
 
+    public function getPhpImageVersion(): string
+    {
+        return $this->config['php_img_version'];
+    }
+
+    /**
+     * @throws Exception
+     */
     public function isBuilt(): bool
     {
         $this->exec(
@@ -118,7 +150,7 @@ abstract class AbstractRecipe implements RecipeInterface
                 }
             }
 
-            foreach ($expectedContainers as $container => $containerIsBuilt) {
+            foreach ($expectedContainers as $containerIsBuilt) {
                 if (!$containerIsBuilt) {
                     return false;
                 }
@@ -131,9 +163,7 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     /**
-     * Start a Magento dev environment.
-     *
-     * @throws Exception
+     * @noinspection HttpUrlsUsage
      */
     public function start(): void
     {
@@ -151,7 +181,7 @@ abstract class AbstractRecipe implements RecipeInterface
         }
 
         if (!$this->isBuilt()) {
-            $this->status('<info>☕ Building Magento %s.</info> <comment>(This should take around 5 minutes on a modern system.)</comment>', [$this->getVersion()]);
+            $this->status("<info>☕ Building Magento %s.</info> <comment>(This shouldn't take more than 5 minutes on a modern system.)</comment>", [$this->getVersion()]);
         }
 
         $this->installMagento();
@@ -184,7 +214,6 @@ abstract class AbstractRecipe implements RecipeInterface
                     ['docker', 'version', '--format', '{{.Server.Version}}'],
                     [],
                     $dockerVersion,
-                    false,
                     false
                 );
 
@@ -205,20 +234,31 @@ abstract class AbstractRecipe implements RecipeInterface
         return $this->_dockerSupportsBuildKit;
     }
 
+    /**
+     * Build Docker containers.
+     *
+     * @throws Exception
+     */
     protected function dockerBuild()
     {
-        $buildkit = $this->dockerSupportsBuildKit();
+        $supportsBuildKit = $this->dockerSupportsBuildKit();
 
-        $env = $buildkit
+        $env = $supportsBuildKit
             ? ['DOCKER_BUILDKIT' => '1']
             : [];
 
-        $this->status('<info>🐋 Building Docker containers...</info> %s', [$buildkit ? '(accelerated by BuildKit)' : '']);
+        $this->status('<info>🐋 Building Docker containers...</info> %s', [$supportsBuildKit ? '(accelerated by BuildKit)' : '']);
         $this->dockerCompose('build', $output, true, false, $env);
     }
 
-    abstract protected function installMagento();
+    /**
+     * Start Magento installation inside the container.
+     */
+    abstract protected function installMagento(): void;
 
+    /**
+     * @throws Exception
+     */
     public function stop(): void
     {
         if (!$this->isRunning()) {
@@ -348,6 +388,10 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     /**
+     * Execute a shell command and monitor its output.
+     * If the current session is not verbose, a spinner animation will be shown
+     * during command run (except if a TTY should be allocated).
+     *
      * @param array        $commandLine         Command line to execute (one array element per command argument)
      * @param array        $env                 ENV vars for the process
      * @param string|null &$output              (Optional) Command output
@@ -365,10 +409,12 @@ abstract class AbstractRecipe implements RecipeInterface
         if ($io && $io->isVerbose()) {
             $io->writeln('<comment>[executing]</comment> '.implode(' ', $commandLine));
         } elseif (!$allocateTty) {
+            // if we are not verbose and should not allocate a TTY, show a spinning animation
             $progress = new Progress((new Snake())->setColorType(Colors::COLOR_TYPE_ANSI256));
             $progress->start(-1);
         }
 
+        // command progress callback. fired on every output line of the process.
         $callback = function ($type, $buffer) use ($io, $progress, $showOutputInSpinner) {
             if ($io && $io->isVerbose()) {
                 $io->writeln("<info>\t" . strtoupper($type) . '</info> > ' . trim($buffer));
@@ -409,29 +455,30 @@ abstract class AbstractRecipe implements RecipeInterface
 
         return $p->getExitCode();
     }
-    
+
+    /**
+     * Run "docker-compose up -d" to start all needed containers.
+     *
+     * @throws Exception
+     */
     protected function dockerComposeUp(bool $detach = false)
     {
         $this->dockerCompose($detach ? ['up', '-d'] : 'up');
         $this->setState('mage_running', true);
     }
 
+    /**
+     * Run "docker-compose stop" to stop all needed containers.
+     *
+     * @throws Exception
+     */
     protected function dockerComposeStop()
     {
         $this->dockerCompose('stop');
         $this->setState('mage_running', false);
     }
 
-    /**
-     * @param string|array $commands
-     * @param string|null  $output (Optional) Command output
-     * @param bool         $showOutputInSpinner
-     * @param bool         $allocateTty
-     * @param array        $env ENV variables for the process
-     * @return int|null
-     * @throws Exception
-     */
-    public function dockerCompose($commands, string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false, array $env = []): ?int
+    public function dockerCompose($arguments, ?string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false, array $env = []): ?int
     {
         // shell command to execute
         $commandLine = ['docker-compose'];
@@ -442,11 +489,11 @@ abstract class AbstractRecipe implements RecipeInterface
             array_push($commandLine, '-f', $file);
         }
 
-        // add Docker Compose command to shell command line
-        if (is_string($commands)) {
-            $commands = [$commands];
+        // add Docker Compose arguments to shell command line
+        if (is_string($arguments)) {
+            $arguments = [$arguments];
         }
-        array_push($commandLine, ...$commands);
+        array_push($commandLine, ...$arguments);
 
         // set env vars for Docker Compose yml
         $__env = array_merge(Config::get('default_env'), $env);
@@ -465,7 +512,7 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     /**
-     * Run a command in a Docker container.
+     * Run a command inside a Docker container.
      *
      * @param string      $service        Compose service name
      * @param string      $command        Command to run
@@ -526,6 +573,8 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     /**
+     * Get the local app/code/ directory on the host system (that will be mounted into the container)..
+     *
      * @return string
      */
     protected function getAppCodeDir(): string
@@ -539,6 +588,7 @@ abstract class AbstractRecipe implements RecipeInterface
             }
         }
 
+        // fall back to this hard coded directory under the current working dir.
         return getcwd().'/app_code/';
     }
 
@@ -581,6 +631,8 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     /**
+     * Check, whether a file exists inside the version-specific Magento source directory.
+     *
      * @param string $file
      * @return bool
      * @throws Exception
@@ -591,22 +643,28 @@ abstract class AbstractRecipe implements RecipeInterface
     }
 
     /**
-     * @param string $file
+     * Check, whether a directory exists inside the version-specific Magento source directory.
+     *
+     * @param string $dir
      * @return bool
      * @throws Exception
      */
-    protected function mageDirExists(string $file): bool
+    protected function mageDirExists(string $dir): bool
     {
-        return is_dir($this->getMageFilename($file));
+        return is_dir($this->getMageFilename($dir));
     }
 
+    /**
+     * Output a new status line. Use this for giving context about the progress
+     * of the current operation.
+     *
+     * @param string|null $message Status message. Supports {@link sprintf()} format strings
+     * @param array|null  $args    Optional {@link sprintf()} arguments
+     */
     protected function status(?string $message, ?array $args = null)
     {
-        if ($message === null) {
-            return;
-        }
-
-        if ($this->io) {
+        // only output something if the current SymfonyStyle is set
+        if ($message !== null && $this->io) {
             if (!empty($args)) {
                 $message = vsprintf($message, $args);
             }

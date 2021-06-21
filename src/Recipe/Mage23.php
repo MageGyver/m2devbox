@@ -12,7 +12,6 @@ namespace MageGyver\M2devbox\Recipe;
 
 use Exception;
 use MageGyver\M2devbox\AbstractRecipe;
-use MageGyver\M2devbox\Devbox;
 use MageGyver\M2devbox\Util\Env;
 
 class Mage23 extends AbstractRecipe
@@ -26,6 +25,9 @@ class Mage23 extends AbstractRecipe
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     protected function composerCreateProject()
     {
         if ($this->mageFileExists('composer.json')) {
@@ -47,6 +49,9 @@ class Mage23 extends AbstractRecipe
         );
     }
 
+    /**
+     * @throws Exception
+     */
     protected function composerInstall()
     {
         $this->dockerBuild();
@@ -64,7 +69,11 @@ class Mage23 extends AbstractRecipe
         );
     }
 
-    protected function installMagento()
+    /**
+     * @throws Exception
+     * @noinspection HttpUrlsUsage
+     */
+    protected function installMagento(): void
     {
         $this->composerInstall();
 

@@ -12,7 +12,6 @@ namespace MageGyver\M2devbox\Recipe;
 
 use Exception;
 use MageGyver\M2devbox\AbstractRecipe;
-use MageGyver\M2devbox\Devbox;
 use MageGyver\M2devbox\Util\Env;
 
 class Mage24 extends AbstractRecipe
@@ -27,6 +26,9 @@ class Mage24 extends AbstractRecipe
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     protected function composerCreateProject()
     {
         if ($this->mageFileExists('composer.json')) {
@@ -48,6 +50,9 @@ class Mage24 extends AbstractRecipe
         );
     }
 
+    /**
+     * @throws Exception
+     */
     protected function composerInstall()
     {
         $this->dockerBuild();
@@ -65,7 +70,11 @@ class Mage24 extends AbstractRecipe
         );
     }
 
-    protected function installMagento()
+    /**
+     * @throws Exception
+     * @noinspection HttpUrlsUsage
+     */
+    protected function installMagento(): void
     {
         $this->composerInstall();
 

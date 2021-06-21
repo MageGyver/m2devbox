@@ -95,8 +95,8 @@ Create a plain-text file called `.env` in your project folder and put each varia
 you want to use in a new line. Assign a value to each variable, separating the 
 variable and value with an `=`.
 
-| Variable            | Default value  | Description                                                      |
-|---------------------|----------------|------------------------------------------------------------------|
+| Variable            | Default value  | Description                           |
+|---------------------|----------------|---------------------------------------|
 | M2D_APP_CODE        | ./app_code/    | The directory where you put your modules. This will be mounted to app/code/ inside the Docker container.  | 
 | M2D_DC_PROJECT_NAME | m2devbox       | Docker compose project name.                                     |
 | M2D_WEB_PORT        | 8080           | Web port used to access the site from your host                  |
@@ -111,14 +111,14 @@ variable and value with an `=`.
 | M2D_MAGE_LANG       | en_US          | Magento 2 backend language for the admin account                 |
 | M2D_MAGE_CURRENCY   | EUR            | Default Magento 2 currency                                       |
 
-### CLI Commands
+### m2devbox CLI Command reference
 
 #### Check currently running instances
 ```shell
 m2devbox [status]
 ```
 
-Running `m2devbox` without arguments or with the `status`argument displays what 
+Running `m2devbox` without arguments or with the `status` argument displays what 
 instances are currently running.
 
 #### Create a blank module
@@ -130,14 +130,14 @@ This command creates a blank Magento 2 module inside the specified project direc
 Depending on your given options, m2devbox will create a PhpStorm project folder (`.idea`) pre-configured with settings for the official [Magento 2 PhpStorm Plugin](https://github.com/magento/magento2-phpstorm-plugin).
 
 
-| Option            | Default value  | Description
-|-------------------|----------------|--------------
-| `--vendor` | - | Your module's vendor name
-| `--module` | - | Your module's name
-| `--project-path` | (current working dir) | The directory where the module files will be created
-| `--phpstorm` | true | If supplied, create a PhpStorm project directory (`.idea`) with the module
-| `--start` | true | If supplied, start a Magento 2 instance with the module already mounted inside it
-| `--mage-version` | (latest version) | _(mandatory only if `--start` or `--phpstorm` are supplied)_ The Magento 2 version to start or configure
+| Option            | Default value         | Description
+|-------------------|-----------------------|----------------------------------|
+| `--vendor`        | -                     | Your module's vendor name                                                                                |
+| `--module`        | -                     | Your module's name                                                                                       |
+| `--project-path`  | (current working dir) | The directory where the module files will be created                                                     |
+| `--phpstorm`      | true                  | If supplied, create a PhpStorm project directory (`.idea`) with the module                               |
+| `--start`         | true                  | If supplied, start a Magento 2 instance with the module already mounted inside it                        |
+| `--mage-version`  | (latest version)      | _(mandatory only if `--start` or `--phpstorm` are supplied)_ The Magento 2 version to start or configure |
 
 You can either supply these options via command line arguments, or interactively answer questions when running the command without arguments.
 
@@ -186,10 +186,10 @@ If you run `m2devbox cli` without any arguments, a new `bash` session inside the
 `web` container will be started for you. This is most useful if you want to run
 Magento CLI commands like `bin/magento cache:clean`.
 
-| Argument     | Optional?  | Description  | Default value |
-|--------------|------------|--------------|---------------|
+| Argument     | Optional?  | Description                      | Default value |
+|--------------|------------|----------------------------------|---------------|
 | `container`  | _optional_ | Container name to run the command in. Allowed values: `web` &#124;&#124; `db` &#124;&#124; `elastic` | `web` |
-| `command`    | _optional_ | Command to run in the container. | `bash` |
+| `command`    | _optional_ | Command to run in the container. | `bash`        |
 
 ## Supported Magento versions
 * 2.3.4
