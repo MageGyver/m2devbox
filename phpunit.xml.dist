@@ -23,5 +23,10 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+
+        <exclude>
+            <directory suffix=".php">_TEMPLATE.idea</directory>
+            <directory suffix=".php">src/etc/module-boilerplate/</directory>
+        </exclude>
     </coverage>
 </phpunit>
