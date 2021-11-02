@@ -38,20 +38,6 @@ class Updater
     }
 
     /**
-     * Check, whether this installation of m2devbox is installed as a Composer
-     * package or not.
-     *
-     * @return bool
-     * @codeCoverageIgnore
-     */
-    public static function isInstalledAsComposerPackage(): bool
-    {
-        // A PHAR distribution has the placeholder value of this constant replaced with a version string.
-        // A composer package distribution retains the placeholder value `@ git_tag @` (without spaces).
-        return M2D_VERSION === '@'.'git_tag'.'@';
-    }
-
-    /**
      * Extract the release tag name and PHAR download URL from a Github release info JSON string.
      *
      * @param string $releaseDataJson
@@ -86,15 +72,15 @@ class Updater
     }
 
     /**
-     * Check, whether an update is needed, based on the given version strings.
+     * Compare the given version strings.
      *
-     * @param string $latestReleaseVersion
-     * @param string $currentVersion
+     * @param string $version1
+     * @param string $version2
      * @return bool
      */
-    public static function isNewerVersion(string $latestReleaseVersion, string $currentVersion = M2D_VERSION): bool
+    public static function isNewerVersion(string $version1, string $version2 = M2D_VERSION): bool
     {
-        return version_compare($latestReleaseVersion, $currentVersion, '>');
+        return version_compare($version1, $version2, '>');
     }
 
     /**

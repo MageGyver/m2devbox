@@ -12,10 +12,12 @@
 
 namespace MageGyver\M2devbox;
 
+use MageGyver\M2devbox\Util\Version;
+
 require_once(__DIR__.'/src/bootstrap.php');
 
 // init and run application
-$devbox = new Devbox('Mage2 Devbox', M2D_VERSION);
+$devbox = new Devbox('m2devbox', Version::getVersion());
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $devbox->run();

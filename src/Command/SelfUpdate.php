@@ -15,6 +15,7 @@ namespace MageGyver\M2devbox\Command;
 
 use MageGyver\M2devbox\Util\Updater;
 use Exception;
+use MageGyver\M2devbox\Util\Version;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +41,7 @@ class SelfUpdate extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            if (Updater::isInstalledAsComposerPackage()) {
+            if (Version::isInstalledAsComposerPackage()) {
                 $io->warning('This m2devbox is installed as a Composer package. Please run composer update magegyver/m2devbox instead.');
                 return Command::FAILURE;
             } else {
