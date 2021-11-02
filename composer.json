@@ -1,5 +1,6 @@
 {
     "name": "magegyver/m2devbox",
+    "version": "1.2.0",
     "description": "🚀 Quickly create Magento 2 development environments.",
     "keywords": ["magento", "magento2", "docker", "docker-compose", "php", "development", "devops"],
     "homepage": "https://github.com/MageGyver/m2devbox",
