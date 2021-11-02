@@ -10,14 +10,21 @@
 
 namespace MageGyver\M2devbox;
 
-use MageGyver\M2devbox\Service\Config;
-use Dotenv\Dotenv;
-
 define('DB_ROOT', dirname(__DIR__));
 const DB_SRC      = DB_ROOT . '/src';
 const M2D_VERSION = '@git_tag@';
 
-require DB_ROOT.'/vendor/autoload.php';
+// use correct autoload file, depending on install method (composer package or phar)
+$autoloadCandidates = [
+    DB_ROOT . '/vendor/autoload.php',
+    DB_ROOT . '/../../autoload.php',
+];
+foreach ($autoloadCandidates as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
 
 // load env vars
 Devbox::loadEnv();
