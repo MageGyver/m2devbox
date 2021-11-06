@@ -15,7 +15,6 @@ use Aeno\SlickProgress\Progress;
 use Aeno\SlickProgress\Theme\Snake;
 use Aeno\SlickProgress\ThemeInterface;
 use MageGyver\M2devbox\Service\Config;
-use MageGyver\M2devbox\Service\State;
 use MageGyver\M2devbox\Util\Env;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -372,19 +371,13 @@ abstract class AbstractRecipe implements RecipeInterface
         }
     }
 
-    protected function getState(string $key)
-    {
-        return State::get('mage_'.$this->getVersion().'.'.$key);
-    }
-
-    protected function setState(string $key, $value)
-    {
-        State::set('mage_'.$this->getVersion().'.'.$key, $value);
-    }
-
     public function isRunning(): bool
     {
-        return $this->getState('mage_running') === true;
+        $this->exec(['docker', 'ps', '--format={{.Names}}'], [], $runningContainers);
+        $runningContainers = explode("\n", $runningContainers);
+        $runningContainers = array_filter($runningContainers);
+
+        return array_intersect($this->getExpectedContainers(), $runningContainers) == $this->getExpectedContainers();
     }
 
     /**
@@ -464,7 +457,6 @@ abstract class AbstractRecipe implements RecipeInterface
     protected function dockerComposeUp(bool $detach = false)
     {
         $this->dockerCompose($detach ? ['up', '-d'] : 'up');
-        $this->setState('mage_running', true);
     }
 
     /**
@@ -475,7 +467,6 @@ abstract class AbstractRecipe implements RecipeInterface
     protected function dockerComposeStop()
     {
         $this->dockerCompose('stop');
-        $this->setState('mage_running', false);
     }
 
     public function dockerCompose($arguments, ?string &$output = null, bool $showOutputInSpinner = true, bool $allocateTty = false, array $env = []): ?int
