@@ -16,6 +16,7 @@ use Aeno\SlickProgress\Theme\Snake;
 use Aeno\SlickProgress\ThemeInterface;
 use MageGyver\M2devbox\Service\Config;
 use MageGyver\M2devbox\Util\Env;
+use MageGyver\M2devbox\Util\Arrays;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -400,7 +401,13 @@ abstract class AbstractRecipe implements RecipeInterface
         $progress = null;
 
         if ($io && $io->isVerbose()) {
-            $io->writeln('<comment>[executing]</comment> '.implode(' ', $commandLine));
+            $__env = Arrays::keyValue2ValuePair($env);
+
+            $io->writeln(
+                '<comment>[executing]</comment> '
+                .Arrays::implodeValuePairs('=', ' ', $__env).' '
+                .implode(' ', $commandLine)
+            );
         } elseif (!$allocateTty) {
             // if we are not verbose and should not allocate a TTY, show a spinning animation
             $progress = new Progress((new Snake())->setColorType(Colors::COLOR_TYPE_ANSI256));
@@ -498,6 +505,16 @@ abstract class AbstractRecipe implements RecipeInterface
             '_M2D_COMPOSER_CACHE_DIR'     => Config::getComposerHome(),
             '_M2D_COMPOSER_AUTH_FILE'     => Config::getComposerAuth(),
         ]);
+
+        if ($this->io->isVerbose()) {
+            $envRows = $__env;
+            $envRows = Arrays::keyValue2ValuePair($envRows);
+
+            $this->io->table(
+                ['Environment var', 'Value'],
+                $envRows
+            );
+        }
 
         // execute command line
         return $this->exec($commandLine, $__env, $output, $showOutputInSpinner, $allocateTty);
