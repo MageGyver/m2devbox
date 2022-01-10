@@ -60,11 +60,9 @@ RUN apt-get update                                   \
     gnupg
 
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
 RUN apt-get install -y nodejs                        \
-    && npm install -g grunt-cli                      \
-    && npm install
-
+    && npm install -g grunt-cli
 
 # Install tools for compiling and linking of MageSuite
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
