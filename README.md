@@ -95,21 +95,21 @@ Create a plain-text file called `.env` in your project folder and put each varia
 you want to use in a new line. Assign a value to each variable, separating the 
 variable and value with an `=`.
 
-| Variable            | Default value  | Description                           |
-|---------------------|----------------|---------------------------------------|
-| M2D_APP_CODE        | ./app_code/    | The directory where you put your modules. This will be mounted to app/code/ inside the Docker container.  | 
-| M2D_DC_PROJECT_NAME | m2devbox       | Docker compose project name.                                     |
-| M2D_WEB_PORT        | 8080           | Web port used to access the site from your host                  |
-| M2D_DB_PORT         | 33306          | MySQL port used to access the database from your host            |
-| M2D_ES_PORT         | 9200           | Elasticsearch port used to access ES from your host              |
-| M2D_ES_CONTROL_PORT | 9300           | Elasticsearch control port used to access ES from your host      |
-| M2D_REDIS_PORT      | 6379           | Redis port used to access Redis from your host                   |
-| M2D_TIMEZONE        | Europe/Berlin  | Timezone to use in Magento 2                                     |
-| M2D_MAGE_WEB_DOMAIN | m2.docker      | Web domain used to access the site from your host                |
-| M2D_MAGE_ADMIN_USER | admin          | Magento 2 admin user name                                        |
-| M2D_MAGE_ADMIN_PASS | Admin123!      | Magento 2 admin user password                                    |
-| M2D_MAGE_LANG       | en_US          | Magento 2 backend language for the admin account                 |
-| M2D_MAGE_CURRENCY   | EUR            | Default Magento 2 currency                                       |
+| Variable            | Default value | Description                                                                                              |
+|---------------------|---------------|----------------------------------------------------------------------------------------------------------|
+| M2D_APP_CODE        | ./app_code/   | The directory where you put your modules. This will be mounted to app/code/ inside the Docker container. | 
+| M2D_DC_PROJECT_NAME | m2devbox      | Docker compose project name.                                                                             |
+| M2D_WEB_PORT        | 8080          | Web port used to access the site from your host                                                          |
+| M2D_DB_PORT         | 33306         | MySQL port used to access the database from your host                                                    |
+| M2D_ES_PORT         | 9200          | Elasticsearch port used to access ES from your host                                                      |
+| M2D_ES_CONTROL_PORT | 9300          | Elasticsearch control port used to access ES from your host                                              |
+| M2D_REDIS_PORT      | 6379          | Redis port used to access Redis from your host                                                           |
+| M2D_TIMEZONE        | Europe/Berlin | Timezone to use in Magento 2                                                                             |
+| M2D_MAGE_WEB_DOMAIN | m2.docker     | Web domain used to access the site from your host                                                        |
+| M2D_MAGE_ADMIN_USER | admin         | Magento 2 admin user name                                                                                |
+| M2D_MAGE_ADMIN_PASS | Admin123!     | Magento 2 admin user password                                                                            |
+| M2D_MAGE_LANG       | en_US         | Magento 2 backend language for the admin account                                                         |
+| M2D_MAGE_CURRENCY   | EUR           | Default Magento 2 currency                                                                               |
 
 ### m2devbox CLI Command reference
 
@@ -130,14 +130,14 @@ This command creates a blank Magento 2 module inside the specified project direc
 Depending on your given options, m2devbox will create a PhpStorm project folder (`.idea`) pre-configured with settings for the official [Magento 2 PhpStorm Plugin](https://github.com/magento/magento2-phpstorm-plugin).
 
 
-| Option            | Default value         | Description
-|-------------------|-----------------------|----------------------------------|
-| `--vendor`        | -                     | Your module's vendor name                                                                                |
-| `--module`        | -                     | Your module's name                                                                                       |
-| `--project-path`  | (current working dir) | The directory where the module files will be created                                                     |
-| `--phpstorm`      | true                  | If supplied, create a PhpStorm project directory (`.idea`) with the module                               |
-| `--start`         | true                  | If supplied, start a Magento 2 instance with the module already mounted inside it                        |
-| `--mage-version`  | (latest version)      | _(mandatory only if `--start` or `--phpstorm` are supplied)_ The Magento 2 version to start or configure |
+| Option           | Default value         | Description                                                                                              |
+|------------------|-----------------------|----------------------------------------------------------------------------------------------------------|
+| `--vendor`       | -                     | Your module's vendor name                                                                                |
+| `--module`       | -                     | Your module's name                                                                                       |
+| `--project-path` | (current working dir) | The directory where the module files will be created                                                     |
+| `--phpstorm`     | true                  | If supplied, create a PhpStorm project directory (`.idea`) with the module                               |
+| `--start`        | true                  | If supplied, start a Magento 2 instance with the module already mounted inside it                        |
+| `--mage-version` | (latest version)      | _(mandatory only if `--start` or `--phpstorm` are supplied)_ The Magento 2 version to start or configure |
 
 You can either supply these options via command line arguments, or interactively answer questions when running the command without arguments.
 
@@ -171,9 +171,9 @@ m2devbox clear [--yes] [<versions>]
 This command stops the given instance(s) and deletes the associated Magento 2 source
 files and database.
 
-| Argument/Option | Optional?  | Description                                   |
-|-----------------|------------|-----------------------------------------------|
-| `--yes`         | _optional_ | Answer all interactive questions with "yes"   |
+| Argument/Option | Optional?  | Description                                                                    |
+|-----------------|------------|--------------------------------------------------------------------------------|
+| `--yes`         | _optional_ | Answer all interactive questions with "yes"                                    |
 | `versions`      | _optional_ | Space-separated list of versions to be cleared or blank to clear all versions. |
 
 #### Running CLI commands inside an instance
@@ -186,10 +186,10 @@ If you run `m2devbox cli` without any arguments, a new `bash` session inside the
 `web` container will be started for you. This is most useful if you want to run
 Magento CLI commands like `bin/magento cache:clean`.
 
-| Argument     | Optional?  | Description                      | Default value |
-|--------------|------------|----------------------------------|---------------|
-| `container`  | _optional_ | Container name to run the command in. Allowed values: `web` &#124;&#124; `db` &#124;&#124; `elastic` | `web` |
-| `command`    | _optional_ | Command to run in the container. | `bash`        |
+| Argument    | Optional?  | Description                                                                                          | Default value |
+|-------------|------------|------------------------------------------------------------------------------------------------------|---------------|
+| `container` | _optional_ | Container name to run the command in. Allowed values: `web` &#124;&#124; `db` &#124;&#124; `elastic` | `web`         |
+| `command`   | _optional_ | Command to run in the container.                                                                     | `bash`        |
 
 ## Supported Magento versions
 * 2.3.4
