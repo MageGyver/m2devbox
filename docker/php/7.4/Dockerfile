@@ -25,7 +25,7 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
 
 # Add Composer
 RUN curl -sS https://getcomposer.org/installer -o composer.phar \
- && php composer.phar --version="1.10.16" \
+ && php composer.phar --version="1.10.24" \
  && mv composer.phar /usr/local/bin/composer
 
 
