@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- compatibility for Magento 2.3.7-p3, 2.4.3-p2 and 2.4.4
+
+## Changed
+- updated compatibility list in Readme
+- reformatted tables in Readme
+
 ## [1.2.1] - 2022-01-10
 ### Fixed
 - using outdated nodejs version in Dockerfiles
