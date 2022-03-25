@@ -2,7 +2,7 @@
 
 <div align="center">
    <img alt="Latest release" src="https://img.shields.io/github/v/release/MageGyver/m2devbox">
-   <img src="https://img.shields.io/badge/Magento-2.x-orange?logo=magento" alt="Magento 2.x" />
+   <img src="https://img.shields.io/badge/Magento-2.3.4+-orange?logo=magento" alt="Magento 2.x" />
    <img src="https://img.shields.io/badge/Docker-17.05+-blue?logo=docker" alt="Docker 17.05+" />
    <img src="https://img.shields.io/badge/License-MPL--2.0-brightgreen" alt="License: MPL-2.0" />
 </div>
@@ -198,13 +198,20 @@ Magento CLI commands like `bin/magento cache:clean`.
 * 2.3.5-p1
 * 2.3.5-p2
 * 2.3.6
-* 2.3.6-1
+* 2.3.6-p1
+* 2.3.7
+* 2.3.7-p3
 * 2.4.0
 * 2.4.0-p1
 * 2.4.1
 * 2.4.1-p1
 * 2.4.2
 * 2.4.2-p1
+* 2.4.2-p2
+* 2.4.3
+* 2.4.3-p1
+* 2.4.3-p2
+* 2.4.4
 
 ## License
 
