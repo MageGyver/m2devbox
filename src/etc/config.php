@@ -80,7 +80,7 @@ return [
             'short_version'   => '237',
             'php_version'     => '7.4',
             'php_img_version' => '7.4-composer2',
-            'compose_files'   => ['docker-compose.mage-2.4.yml'],
+            'compose_files'   => ['docker-compose.mage-2.3.yml'],
         ],
         '2.3.7-p3' => [
             'recipe_class'    => Mage23::class,
@@ -88,7 +88,7 @@ return [
             'short_version'   => '237p3',
             'php_version'     => '7.4',
             'php_img_version' => '7.4-composer2',
-            'compose_files'   => ['docker-compose.mage-2.4.yml'],
+            'compose_files'   => ['docker-compose.mage-2.3.yml'],
         ],
         '2.4.0' => [
             'recipe_class'    => Mage24::class,
@@ -185,7 +185,8 @@ return [
             'long_version'    => '2.4.4',
             'short_version'   => '244',
             'elastic_version' => '7.16.3',
-            'php_img_version' => '7.4-composer2',
+            'php_version'     => '8.1',
+            'php_img_version' => '8.1',
             'compose_files'   => ['docker-compose.mage-2.4.yml'],
         ],
     ],
