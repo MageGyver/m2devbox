@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - compatibility for Magento 2.3.7-p3, 2.4.3-p2 and 2.4.4
 - made Elasticsearch version configurable
-- ability to define `MAGE_VERSION` in `.env` file
+- ability to define `M2D_MAGE_VERSION` in `.env` file
 
 ## Changed
 - updated compatibility list in Readme

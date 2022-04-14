@@ -214,7 +214,7 @@ class StartModule extends Command
                 'MAGENTO_PATH'      => $recipe->getMageSrcDir(),
                 'MAGENTO_VERSION'   => $recipe->getVersion(),
                 'PHP_VERSION'       => $recipe->getPhpVersion(),
-                'ENV_MAGE_VERSION_DEFINITION' => 'MAGE_VERSION='.$recipe->getVersion(),
+                'ENV_MAGE_VERSION_DEFINITION' => 'M2D_MAGE_VERSION='.$recipe->getVersion(),
             ]);
         } else {
             $placeholders = array_merge($placeholders, [
