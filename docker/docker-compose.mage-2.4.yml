@@ -22,6 +22,8 @@ services:
     container_name: "m2devbox-${_M2D_MAGE_SHORT_VERSION}-elastic"
     build:
       context: ./elastic
+      args:
+        ELASTIC_VERSION: "${_M2D_DOCKER_ELASTIC_VERSION}"
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false

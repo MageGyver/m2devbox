@@ -60,6 +60,14 @@ interface RecipeInterface
     public function getPhpImageVersion(): string;
 
     /**
+     * Get the Elasticsearch version for use with this Magento environment.
+     * Returns null if Elasticsearch is not used in this Magento environment.
+     *
+     * @return ?string
+     */
+    public function getElasticVersion(): ?string;
+
+    /**
      * Set SimfonyStyle instance to this Recipe (for shell output).
      *
      * @param SymfonyStyle|null $io

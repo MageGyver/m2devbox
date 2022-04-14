@@ -127,6 +127,11 @@ abstract class AbstractRecipe implements RecipeInterface
         return $this->config['php_img_version'];
     }
 
+    public function getElasticVersion(): ?string
+    {
+        return $this->config['elastic_version'] ?? null;
+    }
+
     /**
      * @throws Exception
      */
@@ -505,6 +510,10 @@ abstract class AbstractRecipe implements RecipeInterface
             '_M2D_COMPOSER_CACHE_DIR'     => Config::getComposerHome(),
             '_M2D_COMPOSER_AUTH_FILE'     => Config::getComposerAuth(),
         ]);
+
+        if ($this->getElasticVersion() !== null) {
+            $__env['_M2D_DOCKER_ELASTIC_VERSION'] = $this->getElasticVersion();
+        }
 
         if ($this->io->isVerbose()) {
             $envRows = $__env;
