@@ -24,7 +24,7 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
 
 
 # Copy Composer binary from official Composer Docker image, @see https://docs.docker.com/develop/develop-images/multistage-build/
-COPY --from=composer /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.3.5 /usr/bin/composer /usr/local/bin/composer
 
 # Easier perm handling
 RUN usermod -u 1000 www-data
