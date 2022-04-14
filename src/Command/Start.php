@@ -12,6 +12,7 @@
 
 namespace MageGyver\M2devbox\Command;
 
+use Dotenv\Dotenv;
 use MageGyver\M2devbox\Service\RecipeLoader;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -29,7 +30,7 @@ class Start extends Command
         $this
             ->setDescription('Start a Magento environment.')
             ->setHelp('This command starts the given Magento version.')
-            ->addArgument('version', InputArgument::REQUIRED, 'Magento version to start')
+            ->addArgument('version', InputArgument::OPTIONAL, 'Magento version to start. Omit to start version defined in .env file (MAGE_VERSION entry)')
         ;
     }
 
@@ -39,6 +40,28 @@ class Start extends Command
 
         try {
             $version = $input->getArgument('version');
+            if ($version === null) {
+                // read MAGE_VERSION from .env file
+                $cwd = getcwd();
+
+                if (!is_readable($cwd.'/.env')) {
+                    throw new Exception(
+                        'No Magento version was provided and no .env file found in the current working directory.'
+                        .'Please provide the Magento version to start either via command argument or via .env file (MAGE_VERSION entry).'
+                    );
+                }
+
+                $env = Dotenv::parse(file_get_contents($cwd.'/.env'));
+                if (!array_key_exists('MAGE_VERSION', $env) || trim($env['MAGE_VERSION']) === '') {
+                    throw new Exception(
+                        'No Magento version was provided and no MAGE_VERSION entry was found in the .env file.'
+                        .'Please provide the Magento version to start either via command argument or via .env file (MAGE_VERSION entry).'
+                    );
+                }
+
+                $version = $env['MAGE_VERSION'];
+            }
+
             $running = RecipeLoader::getRunning($io);
 
             // remove version to be started from $running array
